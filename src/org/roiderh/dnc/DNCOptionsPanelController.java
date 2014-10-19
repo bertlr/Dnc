@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 by herbert
+ * Copyright (C) 2014 by Herbert Roider <herbert.roider@utanet.at>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import org.openide.util.Lookup;
         keywords = "#AdvancedOption_Keywords_DNC",
         keywordsCategory = "Advanced/DNC"
 )
-@org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_DNC=DNC (RS232)", "AdvancedOption_Keywords_DNC=g-code, nc, serial port, RS232, CNC, COM, TTY"})
+@org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_DNC=DNC (RS232)", "AdvancedOption_Keywords_DNC=gcode, cnc, g-code, nc, serial port, RS232, CNC, COM, TTY"})
 public final class DNCOptionsPanelController extends OptionsPanelController {
 
         private DNCPanel panel;

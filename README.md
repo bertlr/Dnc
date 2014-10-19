@@ -1,4 +1,4 @@
-Dnc is a netbeans module to send and receive cnc programs to or from a cnc machine. 
+Dnc is a netbeans module to send and receive cnc program files to or from a cnc machine over serial port (RS232). 
 
 It is in an very early development stage. Don't use for production.
 
