@@ -22,6 +22,7 @@ import jssc.SerialPort;
 import org.openide.util.NbPreferences;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
+import jssc.SerialNativeInterface;
 import jssc.SerialPortList;
 
 public final class DNCPanel extends javax.swing.JPanel {
@@ -123,13 +124,6 @@ public final class DNCPanel extends javax.swing.JPanel {
 
                 }
 
-//this.jComboPort.setRenderer(new ComboBoxOptionRenderer());
-                String[] portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
-
-                for (int i = 0; i < portNames.length; i++) {
-                        this.jComboPort.addItem(portNames[i]);
-                }
-                //this.jComboPort.addItem(new String());
 
         }
 
@@ -167,6 +161,11 @@ public final class DNCPanel extends javax.swing.JPanel {
                 jComboStopbits = new javax.swing.JComboBox();
                 filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 3), new java.awt.Dimension(0, 200), new java.awt.Dimension(32767, 3));
 
+                addComponentListener(new java.awt.event.ComponentAdapter() {
+                        public void componentShown(java.awt.event.ComponentEvent evt) {
+                                formComponentShown(evt);
+                        }
+                });
                 setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.X_AXIS));
 
                 jLayeredPane2.setLayout(new javax.swing.BoxLayout(jLayeredPane2, javax.swing.BoxLayout.Y_AXIS));
@@ -201,6 +200,11 @@ public final class DNCPanel extends javax.swing.JPanel {
 
                 ListProperties.setModel(new ListPropertiesModel());
                 ListProperties.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+                ListProperties.addComponentListener(new java.awt.event.ComponentAdapter() {
+                        public void componentShown(java.awt.event.ComponentEvent evt) {
+                                ListPropertiesComponentShown(evt);
+                        }
+                });
                 ListProperties.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
                         public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                                 ListPropertiesValueChanged(evt);
@@ -336,6 +340,7 @@ public final class DNCPanel extends javax.swing.JPanel {
         private void ListPropertiesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ListPropertiesValueChanged
                 // TODO add your handling code here:
                 System.out.println("changed");
+           
                 int new_index = this.ListProperties.getSelectedIndex();
                 if (new_index < 0) {
                         return;
@@ -425,6 +430,14 @@ public final class DNCPanel extends javax.swing.JPanel {
 
         }//GEN-LAST:event_jComboStopbitsItemStateChanged
 
+        private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+               
+        }//GEN-LAST:event_formComponentShown
+
+        private void ListPropertiesComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_ListPropertiesComponentShown
+                // TODO add your handling code here:
+        }//GEN-LAST:event_ListPropertiesComponentShown
+
         void load() {
                 // TODO read settings and initialize GUI
                 // Example:        
@@ -434,6 +447,27 @@ public final class DNCPanel extends javax.swing.JPanel {
                 // or:
                 // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
                 //String s = NbPreferences.forModule(CoolOptionsPanel.class).get("someFlag", "leer");
+                
+                this.jComboPort.removeAllItems();
+                String[] portNames = null;
+                if(SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX){
+                        portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+                       
+                }else if(SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X){
+                        portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+                       
+                }else if(SerialNativeInterface.getOsType() == SerialNativeInterface.OS_SOLARIS){
+                        portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+                       
+                }else if(SerialNativeInterface.getOsType() == SerialNativeInterface.OS_WINDOWS){
+                        portNames = SerialPortList.getPortNames("", Pattern.compile("COM."));
+                       
+                }
+                for (int i = 0; i < portNames.length; i++) {
+                        this.jComboPort.addItem(portNames[i]);
+                }
+                
+                
                 int item_size = ((ListPropertiesModel) this.ListProperties.getModel()).getSize();
                 for(int i=0;i<item_size;i++){
                         ((ListPropertiesModel) this.ListProperties.getModel()).delete_row(0);    
