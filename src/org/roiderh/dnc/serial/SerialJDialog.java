@@ -199,7 +199,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                         }
                         if (this.receive) {
                                 try {
-                                //byte buffer[] = serialPort.readBytes(bytes);
+                                        //byte buffer[] = serialPort.readBytes(bytes);
                                         //this.received += bytes;
                                         String readed = serialPort.readString(bytes);
                                         if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX || SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
@@ -217,8 +217,8 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                                 } catch (Exception ex) {
                                         System.out.println(ex);
                                 }
-                        }else{
-                                System.out.println("Send "+bytes+" bytes");
+                        } else {
+                                System.out.println("Send " + bytes + " bytes");
                         }
 
 //                                catch (BadLocationException bex) {
@@ -228,23 +228,27 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                         if (event.getEventValue() == 1) {//If line is ON
                                 System.out.println("CTS - ON");
                                 this.jLabelCts.setForeground(Color.red);
+                                this.jTextAreaReceive.setText(this.jTextAreaReceive.getText() + "\n" + "CTS - ON");
                         } else {
                                 this.jLabelCts.setForeground(Color.green);
-
+                                this.jTextAreaReceive.setText(this.jTextAreaReceive.getText() + "\n" + "CTS - OFF");
                                 System.out.println("CTS - OFF");
 
                         }
                 } else if (event.isDSR()) {///If DSR (data set ready) line has changed state
                         if (event.getEventValue() == 1) {//If line is ON
                                 System.out.println("DSR - ON");
+                                this.jTextAreaReceive.setText(this.jTextAreaReceive.getText() + "\n" + "DSR - ON");
                         } else {
                                 System.out.println("DSR - OFF");
+                                this.jTextAreaReceive.setText(this.jTextAreaReceive.getText() + "\n" + "DSR - OFF");
                         }
                 } else if (event.isBREAK()) {
                         System.out.println("break");
 
                 } else if (event.isERR()) {
                         System.out.println("Error " + event.getEventValue());
+                        this.jTextAreaReceive.setText(this.jTextAreaReceive.getText() + "\n" + "Error " + event.getEventValue());
                 } else if (event.isRING()) {
                         System.out.println("Ring " + event.getEventValue());
                 } else if (event.isRLSD()) {
