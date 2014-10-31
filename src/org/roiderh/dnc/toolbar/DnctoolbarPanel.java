@@ -119,7 +119,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
 
         private void jComboBoxConfigsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxConfigsActionPerformed
                 // TODO add your handling code here:
-                System.out.println("Combo configs selection");
+                //System.out.println("Combo configs selection");
         }//GEN-LAST:event_jComboBoxConfigsActionPerformed
 
         private void jButtonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendActionPerformed

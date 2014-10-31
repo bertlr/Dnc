@@ -31,10 +31,15 @@ import java.awt.event.*;
 public class SerialJDialog extends javax.swing.JDialog implements SerialPortEventListener {
 
         private SerialPort serialPort;
-        //private String receivedText;
         private javax.swing.text.Document document;
         private boolean receive = true;
 
+        /**
+         * The serial port must be opened before call this function.
+         * @param s the port
+         * @param doc the current document in the editor
+         * @param r  for receive from serial port, set this to true.
+         */
         public void setPort(SerialPort s, javax.swing.text.Document doc, boolean r) {
                 this.serialPort = s;
                 //this.receivedText = new String();
