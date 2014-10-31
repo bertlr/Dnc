@@ -218,7 +218,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                                         System.out.println(ex);
                                 }
                         } else {
-                                System.out.println("Send " + bytes + " bytes");
+                                //System.out.println("Send " + bytes + " bytes");
                         }
 
 //                                catch (BadLocationException bex) {

@@ -28,6 +28,7 @@ import org.roiderh.dnc.Properties;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import javax.swing.text.BadLocationException;
+
 /**
  * this panel is shown in the toolbar.
  *
@@ -124,8 +125,8 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
         private void jButtonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendActionPerformed
                 this.SendOrReceive(false);
         }//GEN-LAST:event_jButtonSendActionPerformed
-        private void SendOrReceive(boolean receive){
-                  Properties p = (Properties) this.jComboBoxConfigs.getSelectedItem();
+        private void SendOrReceive(boolean receive) {
+                Properties p = (Properties) this.jComboBoxConfigs.getSelectedItem();
                 if (p == null) {
                         JOptionPane.showMessageDialog(null, "Error: no RS232 Config selected.");
                         return;
@@ -143,44 +144,47 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
                 }
 
                 SerialPort serialPort = new SerialPort(p.port);
-              
 
                 if (jDialogReceive == null) {
                         jDialogReceive = new org.roiderh.dnc.serial.SerialJDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
                 }
 
-                jDialogReceive.setPort(serialPort, doc, receive);
                 try {
                         serialPort.openPort();//Open serial port
                         serialPort.setParams(p.baud,
                                 p.databits,
                                 p.stopbits,
                                 p.parity);//Set params.
-                        int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
-                        serialPort.setEventsMask(mask);//Set mask
 
-                        serialPort.addEventListener(jDialogReceive);//Add SerialPortEventListener
-                        if(receive == false){
+                        if (receive == false) {
                                 String s = doc.getText(0, doc.getLength());
                                 serialPort.writeString(s);
+                                serialPort.closePort();
+                                JOptionPane.showMessageDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), "Ready.");
+                        } else {
+
+                                int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
+                                serialPort.setEventsMask(mask);//Set mask
+                                jDialogReceive.setPort(serialPort, doc, receive);
+                                serialPort.addEventListener(jDialogReceive);//Add SerialPortEventListener
+                                jDialogReceive.setVisible(true);
+
                         }
                 } catch (SerialPortException ex) {
                         JOptionPane.showMessageDialog(null, "Error: " + ex.getLocalizedMessage());
                         System.out.println(ex);
                         return;
-                }catch(BadLocationException bex){
-                         JOptionPane.showMessageDialog(null, "Error: " + bex.getLocalizedMessage());
-                         return;
+                } catch (BadLocationException bex) {
+                        JOptionPane.showMessageDialog(null, "Error: " + bex.getLocalizedMessage());
+                        return;
                 }
 
-                jDialogReceive.setVisible(true);
-                
         }
-        
+
         private void jButtonReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceiveActionPerformed
 
                 this.SendOrReceive(true);
-               
+
 
         }//GEN-LAST:event_jButtonReceiveActionPerformed
 
