@@ -351,20 +351,20 @@ public final class DNCPanel extends javax.swing.JPanel {
         private void ListPropertiesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ListPropertiesValueChanged
                 // TODO add your handling code here:
                 System.out.println("changed");
-
+                int items_count = this.ListProperties.getModel().getSize();
                 int new_index = this.ListProperties.getSelectedIndex();
                 if (new_index < 0) {
+                    if(items_count < 1){
                         return;
-                }
-                if (this.current_index == new_index) {
-                        return;
+                    }    
+                    new_index = 0;
                 }
                 this.current_index = new_index;
                 Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
 
                 this.jTextName.setText(p.name);
                 this.jComboPort.setSelectedItem(p.port);
-
+                
                 this.setSelectedComboBoxItem(p.baud, jComboBaud, this.baudrates);
                 this.setSelectedComboBoxItem(p.parity, jComboParity, this.parity);
                 this.setSelectedComboBoxItem(p.flowcontrol, jComboFlowcontrol, this.flowcontrol);
