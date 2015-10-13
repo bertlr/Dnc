@@ -159,26 +159,27 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             if (receive == false) {
                 String s = doc.getText(0, doc.getLength());
                 byte[] raw_string = s.getBytes();
-                String send_text = "";
+                //String send_text = "";
+                String line_to_send = "";
                 int sent_bytes = 0;
-
+                ed.setSelectionStart(0);
+                ed.setSelectionEnd(0);
                 for (int i = 0; i < raw_string.length; i++) {
                     if (raw_string[i] == 13) { // "\r"
                         continue;
                     }
-
+                    // Linebreak:
                     if (raw_string[i] == 10) {
-                        //send_text += (char) 13 + (char) 10; // geht bei Emco nicht!! nur "\n"!!!
-                        send_text +=  (char) 10;
+                        line_to_send += (char) 13; // muesste auch nur mit new Line gehen
+                        line_to_send += (char) 10;
+                        serialPort.writeString(line_to_send);
+                        ed.setSelectionEnd(ed.getSelectionEnd() + line_to_send.length());
+                        line_to_send = "";
                         continue;
 
                     }
-                   
-                    send_text += (char)raw_string[i];
-
+                    line_to_send += (char) raw_string[i];
                 }
-                
-                serialPort.writeString(send_text);
                 serialPort.closePort();
                 JOptionPane.showMessageDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), "Ready.");
             } else {
