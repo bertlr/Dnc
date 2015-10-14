@@ -170,7 +170,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
                     }
                     // Linebreak:
                     if (raw_string[i] == 10) {
-                        line_to_send += (char) 13; // muesste auch nur mit new Line gehen
+                        line_to_send += (char) 13; // muesste auch nur mit new Line (10) gehen
                         line_to_send += (char) 10;
                         serialPort.writeString(line_to_send);
                         ed.setSelectionEnd(ed.getSelectionEnd() + line_to_send.length());
