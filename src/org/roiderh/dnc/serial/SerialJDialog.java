@@ -23,16 +23,18 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialNativeInterface;
 import java.awt.event.*;
+import javax.swing.Timer;
 
 /**
  *
  * @author Herbert Roider <herbert.roider@utanet.at>
  */
-public class SerialJDialog extends javax.swing.JDialog implements SerialPortEventListener {
+public class SerialJDialog extends javax.swing.JDialog implements SerialPortEventListener, ActionListener {
 
     private SerialPort serialPort;
     private javax.swing.text.Document document;
     private boolean receive = true;
+    private Timer t = new Timer(1000, this);
 
     /**
      * The serial port must be opened before call this function.
@@ -68,6 +70,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         //this.receivedText = new String();
         this.document = null;
         this.jLabelCts.setForeground(Color.green);
+        t.start();
 
         //Handle window closing correctly.
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -194,6 +197,8 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     public void serialEvent(SerialPortEvent event) {
 
         if (event.isRXCHAR()) {//If data is available
+            // The color shows incomming data
+            this.jLabelCts.setForeground(Color.red);
             int bytes = event.getEventValue();
 
             if (this.serialPort == null) {
@@ -272,10 +277,23 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     }
 
     /**
+     * switch the color of the Text to green every second. This shows there is no incomming data.
+     * @param e
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == t) {
+            //System.out.println("Being ticked ");
+            this.jLabelCts.setForeground(Color.green);
+        }
+
+    }
+
+    /**
      * This method clears the dialog and hides it.
      */
     public void clearAndHide() {
-
+        t.stop();
         try {
             this.serialPort.closePort();
         } catch (Exception e) {
