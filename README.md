@@ -10,6 +10,6 @@ Open a new File for the Program from a machine and select a configuration for th
 
 Then click on "Receive". A Dialog Box appears.
 Send a program from a machine.
-![reading a program from a cnc machine](Receive.png "Reading a cnc program file from a machnine") 
+![reading a program from a cnc machine](Receive.png "Reading a cnc program file from a machine") 
 
 
