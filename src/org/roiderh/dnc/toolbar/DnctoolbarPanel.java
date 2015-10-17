@@ -16,6 +16,7 @@
  */
 package org.roiderh.dnc.toolbar;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import org.openide.util.NbPreferences;
 import java.util.prefs.Preferences;
@@ -28,13 +29,16 @@ import org.roiderh.dnc.Properties;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import javax.swing.text.BadLocationException;
+import jssc.SerialNativeInterface;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
 
 /**
  * this panel is shown in the toolbar.
  *
  * @author Herbert Roider <herbert.roider@utanet.at>
  */
-public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceChangeListener {
+public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceChangeListener, SerialPortEventListener {
 
     public int current_config_index = -1;
     org.roiderh.dnc.serial.SerialJDialog jDialogReceive = null;
@@ -157,49 +161,41 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
                     p.parity);//Set params.
 
             if (receive == false) {
-                String s = doc.getText(0, doc.getLength());
-                byte[] raw_string = s.getBytes();
-                //String send_text = "";
-                String line_to_send = "";
-                int sent_bytes = 0;
-                ed.setSelectionStart(0);
-                ed.setSelectionEnd(0);
-                for (int i = 0; i < raw_string.length; i++) {
-                    if (raw_string[i] == 13) { // "\r"
-                        continue;
-                    }
-                    // Linebreak:
-                    if (raw_string[i] == 10) {
-                        line_to_send += (char) 13; // muesste auch nur mit new Line (10) gehen
-                        line_to_send += (char) 10;
-                        serialPort.writeString(line_to_send);
-                        ed.setSelectionEnd(ed.getSelectionEnd() + line_to_send.length());
-                        line_to_send = "";
-                        continue;
+                int mask = SerialPort.MASK_TXEMPTY;//Prepare mask
+                serialPort.setEventsMask(mask);//Set mask
+                jDialogReceive.setPort(serialPort, ed, doc, receive);
+                serialPort.addEventListener(jDialogReceive);
 
-                    }
-                    line_to_send += (char) raw_string[i];
-                }
+                //jDialogReceive.sendString(0);
+                jDialogReceive.setVisible(true);
                 serialPort.closePort();
-                JOptionPane.showMessageDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), "Ready.");
+
+                //JOptionPane.showMessageDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), "Ready.");
             } else {
 
                 int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
                 serialPort.setEventsMask(mask);//Set mask
-                jDialogReceive.setPort(serialPort, doc, receive);
+                jDialogReceive.setPort(serialPort, ed, doc, receive);
                 serialPort.addEventListener(jDialogReceive);//Add SerialPortEventListener
                 jDialogReceive.setVisible(true);
+                serialPort.closePort();
 
             }
         } catch (SerialPortException ex) {
             JOptionPane.showMessageDialog(null, "Error: " + ex.getLocalizedMessage());
             System.out.println(ex);
             return;
-        } catch (BadLocationException bex) {
-            JOptionPane.showMessageDialog(null, "Error: " + bex.getLocalizedMessage());
-            return;
         }
 
+    }
+
+    @Override
+    public void serialEvent(SerialPortEvent event) {
+
+        System.out.println("SerialEvent: " + event.getEventValue());
+        if (event.isTXEMPTY()) {
+            System.out.println("TX empty " + event.getEventValue());
+        }
     }
 
         private void jButtonReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceiveActionPerformed
@@ -208,8 +204,6 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
 
 
         }//GEN-LAST:event_jButtonReceiveActionPerformed
-
-
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton jButtonReceive;
         private javax.swing.JButton jButtonSend;
