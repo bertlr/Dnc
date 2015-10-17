@@ -152,7 +152,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
         if (jDialogReceive == null) {
             jDialogReceive = new org.roiderh.dnc.serial.SerialJDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
         }
-
+        
         try {
             serialPort.openPort();//Open serial port
             serialPort.setParams(p.baud,
@@ -160,27 +160,14 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
                     p.stopbits,
                     p.parity);//Set params.
 
-            if (receive == false) {
-                int mask = SerialPort.MASK_TXEMPTY;//Prepare mask
-                serialPort.setEventsMask(mask);//Set mask
-                jDialogReceive.setPort(serialPort, ed, doc, receive);
-                serialPort.addEventListener(jDialogReceive);
 
-                //jDialogReceive.sendString(0);
-                jDialogReceive.setVisible(true);
-                serialPort.closePort();
+            int mask = SerialPort.MASK_RXCHAR;//Prepare mask           
+            serialPort.setEventsMask(mask);//Set mask
+            jDialogReceive.setPort(serialPort, ed, doc, receive);
+            serialPort.addEventListener(jDialogReceive);
+            jDialogReceive.setVisible(true);
+            serialPort.closePort();
 
-                //JOptionPane.showMessageDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), "Ready.");
-            } else {
-
-                int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
-                serialPort.setEventsMask(mask);//Set mask
-                jDialogReceive.setPort(serialPort, ed, doc, receive);
-                serialPort.addEventListener(jDialogReceive);//Add SerialPortEventListener
-                jDialogReceive.setVisible(true);
-                serialPort.closePort();
-
-            }
         } catch (SerialPortException ex) {
             JOptionPane.showMessageDialog(null, "Error: " + ex.getLocalizedMessage());
             System.out.println(ex);
