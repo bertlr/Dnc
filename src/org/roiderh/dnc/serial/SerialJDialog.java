@@ -359,7 +359,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                 this.current_send_pos++;
             }
         } catch (SerialPortException ex) {
-            System.out.println("Error at writeString: " + ex.getMessage());
+            System.out.println("Error at writeByte: " + ex.getMessage());
         }
         
         return this.current_send_pos;

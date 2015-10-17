@@ -16,7 +16,6 @@
  */
 package org.roiderh.dnc.toolbar;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import org.openide.util.NbPreferences;
 import java.util.prefs.Preferences;
@@ -28,17 +27,13 @@ import org.roiderh.dnc.DNCPanel;
 import org.roiderh.dnc.Properties;
 import jssc.SerialPort;
 import jssc.SerialPortException;
-import javax.swing.text.BadLocationException;
-import jssc.SerialNativeInterface;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
 
 /**
  * this panel is shown in the toolbar.
  *
  * @author Herbert Roider <herbert.roider@utanet.at>
  */
-public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceChangeListener, SerialPortEventListener {
+public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceChangeListener {
 
     public int current_config_index = -1;
     org.roiderh.dnc.serial.SerialJDialog jDialogReceive = null;
@@ -170,19 +165,9 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
 
         } catch (SerialPortException ex) {
             JOptionPane.showMessageDialog(null, "Error: " + ex.getLocalizedMessage());
-            System.out.println(ex);
             return;
         }
 
-    }
-
-    @Override
-    public void serialEvent(SerialPortEvent event) {
-
-        System.out.println("SerialEvent: " + event.getEventValue());
-        if (event.isTXEMPTY()) {
-            System.out.println("TX empty " + event.getEventValue());
-        }
     }
 
         private void jButtonReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceiveActionPerformed
