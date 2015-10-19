@@ -24,7 +24,6 @@ import jssc.SerialPortEventListener;
 import jssc.SerialNativeInterface;
 import java.awt.event.*;
 import javax.swing.Timer;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import jssc.SerialPortException;
 
@@ -40,7 +39,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      * If the dialog is for receive date, this must be true, for sending false:
      */
     public boolean receive = true;
-    private Timer t = new Timer(1000, this);
+    private Timer t = new Timer(100, this);
     /**
      * count of the received bytes
      */
@@ -53,7 +52,9 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      * count of the already sent bytes
      */
     private int current_send_pos = 0;
+    private boolean is_sending = false;
     private JTextComponent textComponent;
+    
 
     /**
      * The serial port must be opened before call this function.
@@ -234,15 +235,15 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.isTXEMPTY()) {
-//            int val = event.getEventValue();
-//            System.out.println("SerialEvent TXEMPTY:" + Integer.toString(val));
-//            if (this.receive == false) {
-//                this.jLabelCts.setForeground(Color.red);
-//                System.out.println("serialEvent pos: " + this.current_send_pos);
-//                this.sendString();
-//                this.textComponent.select(0, this.current_send_pos);
+            int val = event.getEventValue();
+            System.out.println("SerialEvent TXEMPTY:" + Integer.toString(val));
+            if (this.receive == false) {
+                this.jLabelCts.setForeground(Color.red);
+                System.out.println("serialEvent pos: " + this.current_send_pos);
+                //this.sendString();
+                this.textComponent.select(0, this.current_send_pos);
 //
-//            }
+            }
         } else if (event.isRXCHAR()) {//If data is available
 
             if (this.receive) {
@@ -280,20 +281,23 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                     System.out.println(ex);
                 }
             } else {
-                int bytes = event.getEventValue();
-                // emty the buffer because the last character stay in the buffer. At the next receive this character is received. Don't know why.
-                try {
-                    byte buffer[] = serialPort.readBytes(bytes);
-                } catch (SerialPortException ex) {
-                    System.out.println(ex.getMessage());
-                }
-                System.out.println("SerialEvent RXCHAR when sending:" + Integer.toString(bytes));
-
-                this.jLabelCts.setForeground(Color.red);
-                System.out.println("serialEvent pos: " + this.current_send_pos);
-                
-                this.sendString();
-                this.textComponent.select(0, this.current_send_pos);
+//                int bytes = event.getEventValue();
+//                // emty the buffer because the last character stay in the buffer. At the next receive this character is received. Don't know why.
+//                try {
+//                    if(bytes > 0){
+//                        byte buffer[] = serialPort.readBytes(bytes);
+//                    }
+//                    
+//                } catch (SerialPortException ex) {
+//                    System.out.println(ex.getMessage());
+//                }
+//                System.out.println("SerialEvent RXCHAR when sending:" + Integer.toString(bytes));
+//
+//                this.jLabelCts.setForeground(Color.red);
+//                System.out.println("serialEvent pos: " + this.current_send_pos);
+//                
+//                //this.sendString();
+//                this.textComponent.select(0, this.current_send_pos);
 
             }
         } else if (event.isCTS()) {//If CTS (clear to send) line has changed state
@@ -327,12 +331,14 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == t) {
+            
             this.jLabelCts.setForeground(Color.LIGHT_GRAY);
             if (this.receive) {
                 this.jTextAreaReceive.setText("received: " + Integer.toString(this.received_count));
             } else {
                 this.jTextAreaReceive.setText("sent: " + Integer.toString(this.current_send_pos));
             }
+            this.sendString();
         }
 
     }
@@ -352,12 +358,37 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      * @return
      */
     private int sendString() {
-    
+        if(this.is_sending){
+            return 0;
+        }
+        this.is_sending = true;
         try {
-            if(this.current_send_pos < this.sendBuffer.length) {
-                this.serialPort.writeByte(this.sendBuffer[this.current_send_pos]);
-                this.current_send_pos++;
+            String sends = "";
+            
+            for(int i=this.current_send_pos; i< this.sendBuffer.length; i++){
+                sends += (char)this.sendBuffer[i];
+                this.current_send_pos = i;
+                if(this.sendBuffer[i] == (char)10){
+                    System.out.println("writeByte");
+                    this.serialPort.writeString(sends);
+                    sends = "";
+                    this.current_send_pos++;
+                    break;
+                    //this.textComponent.select(0, this.current_send_pos);
+                    //Thread.sleep(5000);
+                    //Thread.yield();wait(4000);
+                    
+                }
             }
+            
+            this.is_sending = false;
+//            
+//            this.serialPort.writeBytes(this.sendBuffer);
+//            if(this.current_send_pos < this.sendBuffer.length) {
+//                System.out.println("writeByte");
+//                //this.serialPort.writeByte(this.sendBuffer[this.current_send_pos]);
+//                this.current_send_pos++;
+//            }
         } catch (SerialPortException ex) {
             System.out.println("Error at writeByte: " + ex.getMessage());
         }
