@@ -147,12 +147,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
         if (jDialogReceive == null) {
             jDialogReceive = new org.roiderh.dnc.serial.SerialJDialog(org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
         }
-        int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_TXEMPTY;//Prepare mask  
-
-        if (receive == false) {
-            //mask = SerialPort.MASK_TXEMPTY;//Prepare mask  
-
-        }
+        int mask = SerialPort.MASK_RXCHAR;//Prepare mask  
 
         try {
             serialPort.openPort();//Open serial port
