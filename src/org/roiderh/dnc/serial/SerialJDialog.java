@@ -112,7 +112,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                 // TODO Auto-generated method stub
                 System.out.println("Window activated");
                 if (receive == false) {
-                    sendString();
+                    //sendString();
                 }
                 //super.windowActivated(e);
             }
@@ -328,9 +328,16 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
             if (this.receive) {
                 this.jTextAreaReceive.setText("received: " + Integer.toString(this.received_count));
             } else {
-                this.jTextAreaReceive.setText("sent: " + Integer.toString(this.current_send_pos));
+                String text = "sent: " + Integer.toString(this.current_send_pos) + " Bytes";
+                if (this.sendBuffer.length > 0) {
+                    text += " ( " + Long.toString(Math.round(100.0 * this.current_send_pos / this.sendBuffer.length)) + " % )";
+                } else {
+                    text += " ( 100 % )";
+                }
+                this.jTextAreaReceive.setText(text);
+                this.sendString();
             }
-            this.sendString();
+
         }
 
     }
@@ -340,6 +347,12 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      */
     public void clearAndHide() {
         t.stop();
+        // read bytes in the pipe to clear the pipe (bringt aber nichts):
+        try {
+            this.serialPort.readBytes();
+        } catch (SerialPortException spe) {
+            System.out.println(spe.getMessage());
+        }
         setVisible(false);
     }
 
@@ -364,8 +377,8 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                 //this.current_send_pos = i;
                 if (this.sendBuffer[i] == (char) 10) {
                     // reach the last character or max. lines
-                    if(this.sendBuffer.length-1 == i || lines >=20){
-                        
+                    if (this.sendBuffer.length - 1 == i || lines >= 20) {
+
                         lines = 0;
                         System.out.println("writeByte");
                         this.jLabelCts.setForeground(Color.red);
@@ -381,11 +394,9 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 
                 }
             }
-            
-            
-            
+
             this.is_sending = false;
-            this.textComponent.select(0, this.current_send_pos);
+            //this.textComponent.select(0, this.current_send_pos);
 
         } catch (SerialPortException ex) {
             System.out.println("Error at writeByte: " + ex.getMessage());

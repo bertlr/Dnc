@@ -161,7 +161,10 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             jDialogReceive.setPort(serialPort, ed, doc, receive);
             serialPort.addEventListener(jDialogReceive);
             jDialogReceive.setVisible(true);
+            //serialPort.removeEventListener();
+            serialPort.readBytes();
             serialPort.closePort();
+            
 
         } catch (SerialPortException ex) {
             JOptionPane.showMessageDialog(null, "Error: " + ex.getLocalizedMessage());
