@@ -264,12 +264,12 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                         if (buffer[i] == 0) {
                             continue;
                         }
-                        if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX || SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
-                            if (buffer[i] == 13) { // "\r"
-                                continue;
-                            }
-
+                        //if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX || SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
+                        if (buffer[i] == 13) { // "\r"
+                            continue;
                         }
+
+                        //}
                         readed += (char) buffer[i];
                     }
 
