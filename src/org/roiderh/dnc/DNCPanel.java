@@ -27,110 +27,110 @@ import jssc.SerialPortList;
 
 public final class DNCPanel extends javax.swing.JPanel {
 
-        private final DNCOptionsPanelController controller;
-        //private Properties properties = null;
-        private int current_index = -1;
-        private ArrayList<Option> baudrates;
-        private ArrayList<Option> parity;
-        private ArrayList<Option> port;
-        private ArrayList<Option> flowcontrol;
-        private ArrayList<Option> linebreak;
-        private ArrayList<Option> databits;
-        private ArrayList<Option> stopbits;
+    private final DNCOptionsPanelController controller;
+    //private Properties properties = null;
+    private int current_index = -1;
+    private ArrayList<Option> baudrates;
+    private ArrayList<Option> parity;
+    private ArrayList<Option> port;
+    private ArrayList<Option> flowcontrol;
+    private ArrayList<Option> linebreak;
+    private ArrayList<Option> databits;
+    private ArrayList<Option> stopbits;
 
-        DNCPanel(DNCOptionsPanelController controller) {
-                this.controller = controller;
-                initComponents();
-                // TODO listen to changes in form fields and call controller.changed()
-                //TablePropertiesModel tm = new TablePropertiesModel();
-                //this.jTableProperties.setModel(tm);
-                //ListModel<Properties> lm = new
+    DNCPanel(DNCOptionsPanelController controller) {
+        this.controller = controller;
+        initComponents();
+        // TODO listen to changes in form fields and call controller.changed()
+        //TablePropertiesModel tm = new TablePropertiesModel();
+        //this.jTableProperties.setModel(tm);
+        //ListModel<Properties> lm = new
 
-                Integer[] baud = {SerialPort.BAUDRATE_110,
-                        SerialPort.BAUDRATE_300,
-                        SerialPort.BAUDRATE_600,
-                        SerialPort.BAUDRATE_1200,
-                        SerialPort.BAUDRATE_4800,
-                        SerialPort.BAUDRATE_9600,
-                        SerialPort.BAUDRATE_14400,
-                        SerialPort.BAUDRATE_19200,
-                        SerialPort.BAUDRATE_38400,
-                        SerialPort.BAUDRATE_57600,
-                        SerialPort.BAUDRATE_115200,
-                        SerialPort.BAUDRATE_128000,
-                        SerialPort.BAUDRATE_256000
-                };
-                this.baudrates = new ArrayList<Option>();
-                for (int i = 0; i < baud.length; i++) {
-                        this.baudrates.add(new Option(baud[i]));
-                }
-                this.jComboBaud.setRenderer(new ComboBoxOptionRenderer());
-                for (int i = 0; i < baud.length; i++) {
-                        this.jComboBaud.addItem(this.baudrates.get(i));
-                }
+        Integer[] baud = {SerialPort.BAUDRATE_110,
+            SerialPort.BAUDRATE_300,
+            SerialPort.BAUDRATE_600,
+            SerialPort.BAUDRATE_1200,
+            SerialPort.BAUDRATE_4800,
+            SerialPort.BAUDRATE_9600,
+            SerialPort.BAUDRATE_14400,
+            SerialPort.BAUDRATE_19200,
+            SerialPort.BAUDRATE_38400,
+            SerialPort.BAUDRATE_57600,
+            SerialPort.BAUDRATE_115200,
+            SerialPort.BAUDRATE_128000,
+            SerialPort.BAUDRATE_256000
+        };
+        this.baudrates = new ArrayList<Option>();
+        for (int i = 0; i < baud.length; i++) {
+            this.baudrates.add(new Option(baud[i]));
+        }
+        this.jComboBaud.setRenderer(new ComboBoxOptionRenderer());
+        for (int i = 0; i < baud.length; i++) {
+            this.jComboBaud.addItem(this.baudrates.get(i));
+        }
 
-                this.parity = new ArrayList<Option>();
-                this.parity.add(new Option(SerialPort.PARITY_NONE, "none"));
-                this.parity.add(new Option(SerialPort.PARITY_ODD, "odd"));
-                this.parity.add(new Option(SerialPort.PARITY_EVEN, "even"));
-                this.parity.add(new Option(SerialPort.PARITY_MARK, "mark"));
-                this.parity.add(new Option(SerialPort.PARITY_SPACE, "space"));
-                this.jComboParity.setRenderer(new ComboBoxOptionRenderer());
-                for (int i = 0; i < this.parity.size(); i++) {
-                        this.jComboParity.addItem(this.parity.get(i));
-
-                }
-
-                this.databits = new ArrayList<Option>();
-                this.databits.add(new Option(SerialPort.DATABITS_5, "5"));
-                this.databits.add(new Option(SerialPort.DATABITS_6, "6"));
-                this.databits.add(new Option(SerialPort.DATABITS_7, "7"));
-                this.databits.add(new Option(SerialPort.DATABITS_8, "8"));
-                this.jComboDatabits.setRenderer(new ComboBoxOptionRenderer());
-                for (int i = 0; i < this.databits.size(); i++) {
-                        this.jComboDatabits.addItem(this.databits.get(i));
-
-                }
-
-                this.stopbits = new ArrayList<Option>();
-                this.stopbits.add(new Option(SerialPort.STOPBITS_1, "1"));
-                this.stopbits.add(new Option(SerialPort.STOPBITS_1_5, "1.5"));
-                this.stopbits.add(new Option(SerialPort.STOPBITS_2, "2"));
-                this.jComboStopbits.setRenderer(new ComboBoxOptionRenderer());
-                for (int i = 0; i < this.stopbits.size(); i++) {
-                        this.jComboStopbits.addItem(this.stopbits.get(i));
-
-                }
-
-                this.flowcontrol = new ArrayList<Option>();
-                this.flowcontrol.add(new Option(Properties.FLOWCONTROL_NONE, "none"));
-                this.flowcontrol.add(new Option(Properties.FLOWCONTROL_RTSCTS, "Hardware (RTS/CTS)"));
-                this.flowcontrol.add(new Option(Properties.FLOWCONTROL_XONXOFF, "Software (XON/XOFF)"));
-                this.flowcontrol.add(new Option(Properties.FLOWCONTROL_RTXCTSXONXOFF, "Hardware + Software (RTS/CTS + XON/XOFF)"));
-
-                this.jComboFlowcontrol.setRenderer(new ComboBoxOptionRenderer());
-                for (int i = 0; i < this.flowcontrol.size(); i++) {
-                        this.jComboFlowcontrol.addItem(this.flowcontrol.get(i));
-
-                }
-
-                this.linebreak = new ArrayList<Option>();
-                this.linebreak.add(new Option(Properties.LINEBREAK_CRLF, "Cr+Lf"));
-                this.linebreak.add(new Option(Properties.LINEBREAK_LF, "Lf"));
-                this.linebreak.add(new Option(Properties.LINEBREAK_CR, "Cr"));
-                this.jComboLinebreak.setRenderer(new ComboBoxOptionRenderer());
-                for (int i = 0; i < this.linebreak.size(); i++) {
-                        this.jComboLinebreak.addItem(this.linebreak.get(i));
-
-                }
+        this.parity = new ArrayList<Option>();
+        this.parity.add(new Option(SerialPort.PARITY_NONE, "none"));
+        this.parity.add(new Option(SerialPort.PARITY_ODD, "odd"));
+        this.parity.add(new Option(SerialPort.PARITY_EVEN, "even"));
+        this.parity.add(new Option(SerialPort.PARITY_MARK, "mark"));
+        this.parity.add(new Option(SerialPort.PARITY_SPACE, "space"));
+        this.jComboParity.setRenderer(new ComboBoxOptionRenderer());
+        for (int i = 0; i < this.parity.size(); i++) {
+            this.jComboParity.addItem(this.parity.get(i));
 
         }
 
-        /**
-         * This method is called from within the constructor to initialize the
-         * form. WARNING: Do NOT modify this code. The content of this method is
-         * always regenerated by the Form Editor.
-         */
+        this.databits = new ArrayList<Option>();
+        this.databits.add(new Option(SerialPort.DATABITS_5, "5"));
+        this.databits.add(new Option(SerialPort.DATABITS_6, "6"));
+        this.databits.add(new Option(SerialPort.DATABITS_7, "7"));
+        this.databits.add(new Option(SerialPort.DATABITS_8, "8"));
+        this.jComboDatabits.setRenderer(new ComboBoxOptionRenderer());
+        for (int i = 0; i < this.databits.size(); i++) {
+            this.jComboDatabits.addItem(this.databits.get(i));
+
+        }
+
+        this.stopbits = new ArrayList<Option>();
+        this.stopbits.add(new Option(SerialPort.STOPBITS_1, "1"));
+        this.stopbits.add(new Option(SerialPort.STOPBITS_1_5, "1.5"));
+        this.stopbits.add(new Option(SerialPort.STOPBITS_2, "2"));
+        this.jComboStopbits.setRenderer(new ComboBoxOptionRenderer());
+        for (int i = 0; i < this.stopbits.size(); i++) {
+            this.jComboStopbits.addItem(this.stopbits.get(i));
+
+        }
+
+        this.flowcontrol = new ArrayList<Option>();
+        this.flowcontrol.add(new Option(Properties.FLOWCONTROL_NONE, "none"));
+        this.flowcontrol.add(new Option(Properties.FLOWCONTROL_RTSCTS, "Hardware (RTS/CTS)"));
+        this.flowcontrol.add(new Option(Properties.FLOWCONTROL_XONXOFF, "Software (XON/XOFF)"));
+        this.flowcontrol.add(new Option(Properties.FLOWCONTROL_RTXCTSXONXOFF, "Hardware + Software (RTS/CTS + XON/XOFF)"));
+
+        this.jComboFlowcontrol.setRenderer(new ComboBoxOptionRenderer());
+        for (int i = 0; i < this.flowcontrol.size(); i++) {
+            this.jComboFlowcontrol.addItem(this.flowcontrol.get(i));
+
+        }
+
+        this.linebreak = new ArrayList<Option>();
+        this.linebreak.add(new Option(Properties.LINEBREAK_CRLF, "Cr+Lf"));
+        this.linebreak.add(new Option(Properties.LINEBREAK_LF, "Lf"));
+        this.linebreak.add(new Option(Properties.LINEBREAK_CR, "Cr"));
+        this.jComboLinebreak.setRenderer(new ComboBoxOptionRenderer());
+        for (int i = 0; i < this.linebreak.size(); i++) {
+            this.jComboLinebreak.addItem(this.linebreak.get(i));
+
+        }
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
@@ -316,128 +316,128 @@ public final class DNCPanel extends javax.swing.JPanel {
         }// </editor-fold>//GEN-END:initComponents
 
         private void jButtonNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewActionPerformed
-                // TODO add your handling code here:
-                System.out.println("New");
-                Properties p = new Properties();
-                p.name = "New config";
-                ListPropertiesModel lm = (ListPropertiesModel) this.ListProperties.getModel();
-                lm.add_row(p);
-                this.ListProperties.setSelectedIndex(lm.getSize() - 1);
+            // TODO add your handling code here:
+            System.out.println("New");
+            Properties p = new Properties();
+            p.name = "New config";
+            ListPropertiesModel lm = (ListPropertiesModel) this.ListProperties.getModel();
+            lm.add_row(p);
+            this.ListProperties.setSelectedIndex(lm.getSize() - 1);
 
         }//GEN-LAST:event_jButtonNewActionPerformed
 
         private void jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveActionPerformed
-                // TODO add your handling code here:
+            // TODO add your handling code here:
 //                System.out.println("remove Click");
-                ListPropertiesModel lm = (ListPropertiesModel) this.ListProperties.getModel();
+            ListPropertiesModel lm = (ListPropertiesModel) this.ListProperties.getModel();
 
-                if (lm.getSize() <= 0) {
-                        return;
-                }
-                int index = this.ListProperties.getSelectedIndex();
-                if (index < 0) {
-                        return;
-                }
-                lm.delete_row(index);
-                if (index > 0) {
-                        this.ListProperties.setSelectedIndex(index-1);
-                } else {
-                        this.current_index = -1;
-                }
+            if (lm.getSize() <= 0) {
+                return;
+            }
+            int index = this.ListProperties.getSelectedIndex();
+            if (index < 0) {
+                return;
+            }
+            lm.delete_row(index);
+            if (index > 0) {
+                this.ListProperties.setSelectedIndex(index - 1);
+            } else {
+                this.current_index = -1;
+            }
 
 
         }//GEN-LAST:event_jButtonRemoveActionPerformed
 
         private void ListPropertiesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ListPropertiesValueChanged
-                // TODO add your handling code here:
-                System.out.println("changed");
-                int items_count = this.ListProperties.getModel().getSize();
-                int new_index = this.ListProperties.getSelectedIndex();
-                if (new_index < 0) {
-                    if(items_count < 1){
-                        return;
-                    }    
-                    new_index = 0;
+            // TODO add your handling code here:
+            System.out.println("changed");
+            int items_count = this.ListProperties.getModel().getSize();
+            int new_index = this.ListProperties.getSelectedIndex();
+            if (new_index < 0) {
+                if (items_count < 1) {
+                    return;
                 }
-                this.current_index = new_index;
-                Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
+                new_index = 0;
+            }
+            this.current_index = new_index;
+            Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
 
-                this.jTextName.setText(p.name);
-                this.jComboPort.setSelectedItem(p.port);
-                
-                this.setSelectedComboBoxItem(p.baud, jComboBaud, this.baudrates);
-                this.setSelectedComboBoxItem(p.parity, jComboParity, this.parity);
-                this.setSelectedComboBoxItem(p.flowcontrol, jComboFlowcontrol, this.flowcontrol);
-                this.setSelectedComboBoxItem(p.linebreak, jComboLinebreak, this.linebreak);
-                this.setSelectedComboBoxItem(p.databits, jComboDatabits, this.databits);
-                this.setSelectedComboBoxItem(p.stopbits, jComboStopbits, this.stopbits);
+            this.jTextName.setText(p.name);
+            this.jComboPort.setSelectedItem(p.port);
+
+            this.setSelectedComboBoxItem(p.baud, jComboBaud, this.baudrates);
+            this.setSelectedComboBoxItem(p.parity, jComboParity, this.parity);
+            this.setSelectedComboBoxItem(p.flowcontrol, jComboFlowcontrol, this.flowcontrol);
+            this.setSelectedComboBoxItem(p.linebreak, jComboLinebreak, this.linebreak);
+            this.setSelectedComboBoxItem(p.databits, jComboDatabits, this.databits);
+            this.setSelectedComboBoxItem(p.stopbits, jComboStopbits, this.stopbits);
 
 
         }//GEN-LAST:event_ListPropertiesValueChanged
 
         private void jTextNameCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_jTextNameCaretUpdate
-                // TODO add your handling code here:
-                System.out.println("caret text changed");
-                if (this.current_index < 0) {
-                        return;
-                }
-                Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
-                if (p == null) {
-                        return;
-                }
-                p.name = this.jTextName.getText().trim();
+            // TODO add your handling code here:
+            System.out.println("caret text changed");
+            if (this.current_index < 0) {
+                return;
+            }
+            Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
+            if (p == null) {
+                return;
+            }
+            p.name = this.jTextName.getText().trim();
 
-                ((ListPropertiesModel) this.ListProperties.getModel()).update_row(this.current_index, p);
+            ((ListPropertiesModel) this.ListProperties.getModel()).update_row(this.current_index, p);
 
 
         }//GEN-LAST:event_jTextNameCaretUpdate
 
         private void jComboBaudItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBaudItemStateChanged
-                // TODO add your handling code here:
-                this.setListPropertiesModelFromComboBox("baud", (javax.swing.JComboBox) evt.getSource());
+            // TODO add your handling code here:
+            this.setListPropertiesModelFromComboBox("baud", (javax.swing.JComboBox) evt.getSource());
         }//GEN-LAST:event_jComboBaudItemStateChanged
 
         private void jComboParityItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboParityItemStateChanged
-                // TODO add your handling code here:
-                this.setListPropertiesModelFromComboBox("parity", (javax.swing.JComboBox) evt.getSource());
+            // TODO add your handling code here:
+            this.setListPropertiesModelFromComboBox("parity", (javax.swing.JComboBox) evt.getSource());
         }//GEN-LAST:event_jComboParityItemStateChanged
 
         private void jComboPortItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboPortItemStateChanged
-                // TODO add your handling code here:
-                if (this.current_index < 0) {
-                        return;
-                }
-                Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
-                if (p == null) {
-                        return;
-                }
-                p.port = (String) this.jComboPort.getSelectedItem();
-                ((ListPropertiesModel) this.ListProperties.getModel()).update_row(this.current_index, p);
+            // TODO add your handling code here:
+            if (this.current_index < 0) {
+                return;
+            }
+            Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
+            if (p == null) {
+                return;
+            }
+            p.port = (String) this.jComboPort.getSelectedItem();
+            ((ListPropertiesModel) this.ListProperties.getModel()).update_row(this.current_index, p);
 
 
         }//GEN-LAST:event_jComboPortItemStateChanged
 
         private void jComboFlowcontrolItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboFlowcontrolItemStateChanged
-                // TODO add your handling code here:
-                this.setListPropertiesModelFromComboBox("flowcontrol", (javax.swing.JComboBox) evt.getSource());
+            // TODO add your handling code here:
+            this.setListPropertiesModelFromComboBox("flowcontrol", (javax.swing.JComboBox) evt.getSource());
 
         }//GEN-LAST:event_jComboFlowcontrolItemStateChanged
 
         private void jComboLinebreakItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboLinebreakItemStateChanged
-                // TODO add your handling code here:
-                this.setListPropertiesModelFromComboBox("linebreak", (javax.swing.JComboBox) evt.getSource());
+            // TODO add your handling code here:
+            this.setListPropertiesModelFromComboBox("linebreak", (javax.swing.JComboBox) evt.getSource());
 
         }//GEN-LAST:event_jComboLinebreakItemStateChanged
 
         private void jComboDatabitsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboDatabitsItemStateChanged
-                // TODO add your handling code here:
-                this.setListPropertiesModelFromComboBox("databits", (javax.swing.JComboBox) evt.getSource());
+            // TODO add your handling code here:
+            this.setListPropertiesModelFromComboBox("databits", (javax.swing.JComboBox) evt.getSource());
 
         }//GEN-LAST:event_jComboDatabitsItemStateChanged
 
         private void jComboStopbitsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboStopbitsItemStateChanged
-                // TODO add your handling code here:
-                this.setListPropertiesModelFromComboBox("stopbits", (javax.swing.JComboBox) evt.getSource());
+            // TODO add your handling code here:
+            this.setListPropertiesModelFromComboBox("stopbits", (javax.swing.JComboBox) evt.getSource());
 
         }//GEN-LAST:event_jComboStopbitsItemStateChanged
 
@@ -446,167 +446,173 @@ public final class DNCPanel extends javax.swing.JPanel {
         }//GEN-LAST:event_formComponentShown
 
         private void ListPropertiesComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_ListPropertiesComponentShown
-                // TODO add your handling code here:
+            // TODO add your handling code here:
         }//GEN-LAST:event_ListPropertiesComponentShown
 
-        void load() {
-                // TODO read settings and initialize GUI
-                // Example:        
-                // someCheckBox.setSelected(Preferences.userNodeForPackage(CoolOptionsPanel.class).getBoolean("someFlag", false));
-                // or for org.openide.util with API spec. version >= 7.4:
-                // someCheckBox.setSelected(NbPreferences.forModule(CoolOptionsPanel.class).getBoolean("someFlag", false));
-                // or:
-                // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
-                //String s = NbPreferences.forModule(CoolOptionsPanel.class).get("someFlag", "leer");
+    void load() {
+        // TODO read settings and initialize GUI
+        // Example:        
+        // someCheckBox.setSelected(Preferences.userNodeForPackage(CoolOptionsPanel.class).getBoolean("someFlag", false));
+        // or for org.openide.util with API spec. version >= 7.4:
+        // someCheckBox.setSelected(NbPreferences.forModule(CoolOptionsPanel.class).getBoolean("someFlag", false));
+        // or:
+        // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
+        //String s = NbPreferences.forModule(CoolOptionsPanel.class).get("someFlag", "leer");
 
-                this.jComboPort.removeAllItems();
-                String[] portNames = null;
-                if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX) {
-                        portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+        this.jComboPort.removeAllItems();
+        String[] portNames = null;
+        if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX) {
+            portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
 
-                } else if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
-                        portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+        } else if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
+            portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
 
-                } else if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_SOLARIS) {
-                        portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+        } else if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_SOLARIS) {
+            portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
 
-                } else if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_WINDOWS) {
-                        portNames = SerialPortList.getPortNames("", Pattern.compile("COM."));
-
-                }
-                for (int i = 0; i < portNames.length; i++) {
-                        this.jComboPort.addItem(portNames[i]);
-                }
-
-                int item_size = ((ListPropertiesModel) this.ListProperties.getModel()).getSize();
-                for (int i = 0; i < item_size; i++) {
-                        ((ListPropertiesModel) this.ListProperties.getModel()).delete_row(0);
-                }
-
-                ArrayList<Properties> properties = DNCPanel.readPreferences();
-                if (properties == null) {
-                        return;
-                }
-                for (int i = 0; i < properties.size(); i++) {
-                        ((ListPropertiesModel) this.ListProperties.getModel()).add_row(properties.get(i));
-                }
+        } else if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_WINDOWS) {
+            portNames = SerialPortList.getPortNames("", Pattern.compile("COM."));
 
         }
-
-        void store() {
-                // TODO store modified settings
-                // Example:
-                // Preferences.userNodeForPackage(CoolOptionsPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
-                // or for org.openide.util with API spec. version >= 7.4:
-                // NbPreferences.forModule(CoolOptionsPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
-                // or:
-                // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
-
-                ListPropertiesModel lm = (ListPropertiesModel) this.ListProperties.getModel();
-                for (Integer i = 0; i < lm.getSize(); i++) {
-                        String config_nr = i.toString();
-                        Properties p = (Properties) lm.get_row(i);
-                        System.out.println("store: " + config_nr + "/name = " + p.name);
-                        NbPreferences.forModule(DNCPanel.class).put(config_nr + "/uid", p.uid.toString());
-                        NbPreferences.forModule(DNCPanel.class).put(config_nr + "/name", p.name);
-                        NbPreferences.forModule(DNCPanel.class).put(config_nr + "/port", p.port);
-                        NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/baud", p.baud);
-                        NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/parity", p.parity);
-                        NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/databits", p.databits);
-                        NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/stopbits", p.stopbits);
-                        NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/flowcontrol", p.flowcontrol);
-                        NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/linebreak", p.linebreak);
-
-                }
-                //NbPreferences.forModule(DNCPanel.class).put("someFlag/teststring", "stringvalue");
-                Preferences prefs = NbPreferences.forModule(DNCPanel.class);
-                System.out.println(prefs.absolutePath());
-
-                //SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
+        for (int i = 0; i < portNames.length; i++) {
+            this.jComboPort.addItem(portNames[i]);
         }
 
-        boolean valid() {
-                // TODO check whether form is consistent and complete
-                return true;
+        int item_size = ((ListPropertiesModel) this.ListProperties.getModel()).getSize();
+        for (int i = 0; i < item_size; i++) {
+            ((ListPropertiesModel) this.ListProperties.getModel()).delete_row(0);
         }
 
-        private void setSelectedComboBoxItem(int option_number, javax.swing.JComboBox c, ArrayList<Option> a) {
-                for (int i = 0; i < a.size(); i++) {
-                        if (a.get(i).number == option_number) {
-                                c.setSelectedItem(a.get(i));
-                                return;
-                        }
-                }
-
+        ArrayList<Properties> properties = DNCPanel.readPreferences();
+        if (properties == null) {
+            return;
+        }
+        for (int i = 0; i < properties.size(); i++) {
+            ((ListPropertiesModel) this.ListProperties.getModel()).add_row(properties.get(i));
         }
 
-        private void setListPropertiesModelFromComboBox(String name, javax.swing.JComboBox c) {
-                if (this.current_index < 0) {
-                        return;
-                }
-                Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
-                if (p == null) {
-                        return;
-                }
-                int option_number = ((Option) c.getSelectedItem()).number;
-                if (name == "parity") {
-                        p.parity = option_number;
-                } else if (name == "baud") {
-                        p.baud = option_number;
-                } else if (name == "linebreak") {
-                        p.linebreak = option_number;
-                } else if (name == "flowcontrol") {
-                        p.flowcontrol = option_number;
-                } else if (name == "databits") {
-                        p.databits = option_number;
-                } else if (name == "stopbits") {
-                        p.stopbits = option_number;
-                }
+    }
 
-                ((ListPropertiesModel) this.ListProperties.getModel()).update_row(this.current_index, p);
+    void store() {
+        // TODO store modified settings
+        // Example:
+        // Preferences.userNodeForPackage(CoolOptionsPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
+        // or for org.openide.util with API spec. version >= 7.4:
+        // NbPreferences.forModule(CoolOptionsPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
+        // or:
+        // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
 
+        try {
+            NbPreferences.forModule(DNCPanel.class).clear();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
-        public static ArrayList<Properties> readPreferences() {
-                ArrayList<Properties> properties = null;
-                Preferences prefs = NbPreferences.forModule(DNCPanel.class);
-                System.out.println("readPreferences()");
-                System.out.println(prefs.absolutePath());
-                try {
-                        String[] names = prefs.keys();
-                        System.out.println("Eintraege anz. = " + names.length);
-                        properties = new ArrayList<Properties>();
-                        for (Integer i = 0; i < 10; i++) {
-                                //System.out.println(names[i]);
-                                String config_nr = i.toString();
-                                if (Arrays.asList(names).contains(config_nr + "/name")) {
-                                        System.out.println(config_nr + " exitsts");
-                                } else {
-                                        break;
-                                }
-
-                                Properties p = new Properties();
-                                p.uid = java.util.UUID.fromString(prefs.get(config_nr + "/uid", ""));
-                                p.name = prefs.get(config_nr + "/name", "<leer>");
-                                p.port = prefs.get(config_nr + "/port", "");
-                                p.baud = prefs.getInt(config_nr + "/baud", SerialPort.BAUDRATE_9600);
-                                p.parity = prefs.getInt(config_nr + "/parity", SerialPort.PARITY_NONE);
-                                p.databits = prefs.getInt(config_nr + "/databits", SerialPort.DATABITS_8);
-                                p.stopbits = prefs.getInt(config_nr + "/stopbits", SerialPort.STOPBITS_1);
-                                p.flowcontrol = prefs.getInt(config_nr + "/flowcontrol", Properties.FLOWCONTROL_NONE);
-                                p.linebreak = prefs.getInt(config_nr + "/linebreak", Properties.LINEBREAK_CRLF);
-                                System.out.println(config_nr + "/name = " + p.name);
-                                properties.add(p);
-                                //((ListPropertiesModel) this.ListProperties.getModel()).add_row(p);
-
-                        }
-
-                } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                }
-                return properties;
+        ListPropertiesModel lm = (ListPropertiesModel) this.ListProperties.getModel();
+        for (Integer i = 0; i < lm.getSize(); i++) {
+            String config_nr = i.toString();
+            Properties p = (Properties) lm.get_row(i);
+            System.out.println("store: " + config_nr + "/name = " + p.name);
+            NbPreferences.forModule(DNCPanel.class).put(config_nr + "/uid", p.uid.toString());
+            NbPreferences.forModule(DNCPanel.class).put(config_nr + "/name", p.name);
+            NbPreferences.forModule(DNCPanel.class).put(config_nr + "/port", p.port);
+            NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/baud", p.baud);
+            NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/parity", p.parity);
+            NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/databits", p.databits);
+            NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/stopbits", p.stopbits);
+            NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/flowcontrol", p.flowcontrol);
+            NbPreferences.forModule(DNCPanel.class).putInt(config_nr + "/linebreak", p.linebreak);
 
         }
+        //NbPreferences.forModule(DNCPanel.class).put("someFlag/teststring", "stringvalue");
+        Preferences prefs = NbPreferences.forModule(DNCPanel.class);
+        System.out.println(prefs.absolutePath());
+
+        //SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
+    }
+
+    boolean valid() {
+        // TODO check whether form is consistent and complete
+        return true;
+    }
+
+    private void setSelectedComboBoxItem(int option_number, javax.swing.JComboBox c, ArrayList<Option> a) {
+        for (int i = 0; i < a.size(); i++) {
+            if (a.get(i).number == option_number) {
+                c.setSelectedItem(a.get(i));
+                return;
+            }
+        }
+
+    }
+
+    private void setListPropertiesModelFromComboBox(String name, javax.swing.JComboBox c) {
+        if (this.current_index < 0) {
+            return;
+        }
+        Properties p = ((ListPropertiesModel) this.ListProperties.getModel()).get_row(this.current_index);
+        if (p == null) {
+            return;
+        }
+        int option_number = ((Option) c.getSelectedItem()).number;
+        if (name == "parity") {
+            p.parity = option_number;
+        } else if (name == "baud") {
+            p.baud = option_number;
+        } else if (name == "linebreak") {
+            p.linebreak = option_number;
+        } else if (name == "flowcontrol") {
+            p.flowcontrol = option_number;
+        } else if (name == "databits") {
+            p.databits = option_number;
+        } else if (name == "stopbits") {
+            p.stopbits = option_number;
+        }
+
+        ((ListPropertiesModel) this.ListProperties.getModel()).update_row(this.current_index, p);
+
+    }
+
+    public static ArrayList<Properties> readPreferences() {
+        ArrayList<Properties> properties = null;
+        Preferences prefs = NbPreferences.forModule(DNCPanel.class);
+        System.out.println("readPreferences()");
+        System.out.println(prefs.absolutePath());
+        try {
+            String[] names = prefs.keys();
+            System.out.println("Eintraege anz. = " + names.length);
+            properties = new ArrayList<Properties>();
+            for (Integer i = 0; i < 10; i++) {
+                //System.out.println(names[i]);
+                String config_nr = i.toString();
+                if (Arrays.asList(names).contains(config_nr + "/name")) {
+                    System.out.println(config_nr + " exitsts");
+                } else {
+                    break;
+                }
+
+                Properties p = new Properties();
+                p.uid = java.util.UUID.fromString(prefs.get(config_nr + "/uid", ""));
+                p.name = prefs.get(config_nr + "/name", "<leer>");
+                p.port = prefs.get(config_nr + "/port", "");
+                p.baud = prefs.getInt(config_nr + "/baud", SerialPort.BAUDRATE_9600);
+                p.parity = prefs.getInt(config_nr + "/parity", SerialPort.PARITY_NONE);
+                p.databits = prefs.getInt(config_nr + "/databits", SerialPort.DATABITS_8);
+                p.stopbits = prefs.getInt(config_nr + "/stopbits", SerialPort.STOPBITS_1);
+                p.flowcontrol = prefs.getInt(config_nr + "/flowcontrol", Properties.FLOWCONTROL_NONE);
+                p.linebreak = prefs.getInt(config_nr + "/linebreak", Properties.LINEBREAK_CRLF);
+                System.out.println(config_nr + "/name = " + p.name);
+                properties.add(p);
+                //((ListPropertiesModel) this.ListProperties.getModel()).add_row(p);
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return properties;
+
+    }
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JList ListProperties;
         private javax.swing.JLayeredPane PanelProperties;
