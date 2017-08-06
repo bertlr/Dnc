@@ -21,7 +21,6 @@ import java.awt.Color;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
-import jssc.SerialNativeInterface;
 import java.awt.event.*;
 import javax.swing.Timer;
 import javax.swing.text.JTextComponent;
@@ -71,8 +70,12 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         this.received_count = 0;
         this.current_send_pos = 0;
         this.jLabelCts.setForeground(Color.LIGHT_GRAY);
-
-        if (r == false) {
+        jProgressBarSent.setMaximum(100);
+        jProgressBarSent.setMinimum(0);
+        this.jProgressBarSent.setValue(0);
+        this.jProgressBarSent.setStringPainted(true);
+        this.jProgressBarSent.setVisible(false);
+        if (this.receive == false) {
             String doc_string = "";
             try {
                 doc_string = this.document.getText(0, this.document.getLength());
@@ -82,6 +85,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
             doc_string = doc_string.replace("\r", "");
             doc_string = doc_string.replace("\n", "\r\n");
             this.sendBuffer = doc_string.getBytes();
+            this.jProgressBarSent.setVisible(true);
         }
         t.start();
 
@@ -133,6 +137,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         jTextAreaReceive = new javax.swing.JTextArea();
         jLabelCts = new javax.swing.JLabel();
         jButtonClose = new javax.swing.JButton();
+        jProgressBarSent = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(SerialJDialog.class, "SerialJDialog.title")); // NOI18N
@@ -164,7 +169,8 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelCts)
                             .addComponent(jButtonClose))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jProgressBarSent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -173,8 +179,10 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                 .addContainerGap()
                 .addComponent(jLabelCts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jProgressBarSent, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(jButtonClose)
                 .addContainerGap())
         );
@@ -329,10 +337,18 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                 this.jTextAreaReceive.setText("received: " + Integer.toString(this.received_count));
             } else {
                 String text = "sent: " + Integer.toString(this.current_send_pos) + " Bytes";
-                if (this.sendBuffer.length > 0) {
-                    text += " ( " + Long.toString(Math.round(100.0 * this.current_send_pos / this.sendBuffer.length)) + " % )";
+                if (this.current_send_pos < this.sendBuffer.length) {
+                    int progress = (int) Math.round(100.0 * this.current_send_pos / this.sendBuffer.length);
+                    if (progress >= 100) {
+                        progress = 99;
+                    }
+                    text += " ( " + Integer.toString(progress) + " % )";
+                    this.jProgressBarSent.setValue(progress);
+                    this.jProgressBarSent.setString(Integer.toString(progress) + " %");
                 } else {
                     text += " ( 100 % )";
+                    this.jProgressBarSent.setValue(100);
+                    this.jProgressBarSent.setString("100 %");
                 }
                 this.jTextAreaReceive.setText(text);
                 this.sendString();
@@ -408,6 +424,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonClose;
     private javax.swing.JLabel jLabelCts;
+    private javax.swing.JProgressBar jProgressBarSent;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextAreaReceive;
     // End of variables declaration//GEN-END:variables
