@@ -410,6 +410,11 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 
                 }
             }
+            if(sends.length() > 0){
+                this.serialPort.writeString(sends);
+                this.current_send_pos += sends.length();
+                sends = "";
+            }
 
             this.is_sending = false;
             //this.textComponent.select(0, this.current_send_pos);
