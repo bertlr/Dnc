@@ -27,10 +27,10 @@ public class Properties {
         static int LINEBREAK_LF = 1;
         static int LINEBREAK_CR = 2;
        
-        static int FLOWCONTROL_NONE = SerialPort.FLOWCONTROL_NONE;
-        static int FLOWCONTROL_RTSCTS = SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT;
-        static int FLOWCONTROL_XONXOFF = SerialPort.FLOWCONTROL_XONXOFF_IN | SerialPort.FLOWCONTROL_XONXOFF_OUT;
-        static int FLOWCONTROL_RTXCTSXONXOFF = SerialPort.FLOWCONTROL_XONXOFF_IN | SerialPort.FLOWCONTROL_XONXOFF_OUT | SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT;
+        public static int FLOWCONTROL_NONE = SerialPort.FLOWCONTROL_NONE;
+        public static int FLOWCONTROL_RTSCTS = SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT;
+        public static int FLOWCONTROL_XONXOFF = SerialPort.FLOWCONTROL_XONXOFF_IN | SerialPort.FLOWCONTROL_XONXOFF_OUT;
+        public static int FLOWCONTROL_RTXCTSXONXOFF = SerialPort.FLOWCONTROL_XONXOFF_IN | SerialPort.FLOWCONTROL_XONXOFF_OUT | SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT;
        
         public UUID uid = UUID.randomUUID();
         public String name = new String();

@@ -54,6 +54,8 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     private boolean is_sending = false;
     private JTextComponent textComponent;
 
+    boolean cts_on = true;
+
     /**
      * The serial port must be opened before call this function.
      *
@@ -251,17 +253,17 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 ////
 //            }
         } else if (event.isRXCHAR()) {//If data is available
-
-            if (this.receive) {
+            if (true) {
+                //if (this.receive) {
                 // The color shows incomming data
                 this.jLabelCts.setForeground(Color.red);
                 int bytes = event.getEventValue();
                 System.out.println("SerialEvent RXCHAR anz=" + bytes);
                 if (this.serialPort == null) {
-                    return;
+                    //return;
                 }
                 if (this.serialPort.isOpened() == false) {
-                    return;
+                    //return;
                 }
 
                 try {
@@ -301,13 +303,19 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 
             }
         } else if (event.isCTS()) {//If CTS (clear to send) line has changed state
-//            if (event.getEventValue() == 1) {//If line is ON
-//            } else {
-//            }
+            if (event.getEventValue() == 1) {//If line is ON
+                this.cts_on = true;
+                System.out.println("CTS on");
+            } else {
+                this.cts_on = false; // receiver want to wait
+                System.out.println("CTS off");
+            }
         } else if (event.isDSR()) {///If DSR (data set ready) line has changed state
-//            if (event.getEventValue() == 1) {//If line is ON
-//            } else {
-//            }
+            if (event.getEventValue() == 1) {//If line is ON
+                System.out.println("DSR on");
+            } else {
+                System.out.println("DSR off");
+            }
         } else if (event.isBREAK()) {
 //            System.out.println("break");
 //
@@ -383,22 +391,30 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
             System.out.println("unnoetiges Timerevent");
             return 0;
         }
+        if (cts_on == false) {
+            this.jLabelCts.setForeground(Color.yellow);
+            //return this.current_send_pos
+        }
         this.is_sending = true;
         try {
             String sends = "";
             int lines = 0;
+            boolean succeed = false;
 
             for (int i = this.current_send_pos; i < this.sendBuffer.length; i++) {
                 sends += (char) this.sendBuffer[i];
                 //this.current_send_pos = i;
                 if (this.sendBuffer[i] == (char) 10) {
                     // reach the last character or max. lines
-                    if (this.sendBuffer.length - 1 == i || lines >= 20) {
+                    if (this.sendBuffer.length - 1 == i || lines >= 10) {
 
                         lines = 0;
-                        System.out.println("writeByte");
+                        //System.out.println("writeByte");
                         this.jLabelCts.setForeground(Color.red);
-                        this.serialPort.writeString(sends);
+                        succeed = this.serialPort.writeString(sends);
+                        if (succeed == false) {
+                            System.out.println("Error at sendString");
+                        }
                         sends = "";
                         this.current_send_pos = i;
                         this.current_send_pos++;// set to the next index
@@ -410,7 +426,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 
                 }
             }
-            if(sends.length() > 0){
+            if (sends.length() > 0) {
                 this.serialPort.writeString(sends);
                 this.current_send_pos += sends.length();
                 sends = "";

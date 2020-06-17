@@ -149,7 +149,9 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             jDialogReceive.setLocationRelativeTo(org.openide.windows.WindowManager.getDefault().getMainWindow());
         }
         int mask = SerialPort.MASK_RXCHAR;//Prepare mask  
-
+        if(p.flowcontrol == Properties.FLOWCONTROL_RTSCTS || p.flowcontrol == Properties.FLOWCONTROL_RTXCTSXONXOFF){
+            mask = mask | SerialPort.MASK_CTS;
+        }
         try {
             serialPort.openPort();//Open serial port
             serialPort.setParams(p.baud,
@@ -157,8 +159,14 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
                     p.stopbits,
                     p.parity);//Set params.
 
+            serialPort.setFlowControlMode(p.flowcontrol);
             //int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_TXEMPTY;//Prepare mask           
             serialPort.setEventsMask(mask);//Set mask
+            if(serialPort.isCTS()){
+                System.out.println(" CTS = true, on");
+            }else{
+                System.out.println(" CTS = false, off");
+            }
             jDialogReceive.setPort(serialPort, ed, doc, receive);
             serialPort.addEventListener(jDialogReceive);
             jDialogReceive.setVisible(true);
