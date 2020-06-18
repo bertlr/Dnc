@@ -22,7 +22,6 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import java.awt.event.*;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
