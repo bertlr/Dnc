@@ -253,55 +253,36 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 ////
 //            }
         } else if (event.isRXCHAR()) {//If data is available
-            if (true) {
-                //if (this.receive) {
-                // The color shows incomming data
-                this.jLabelCts.setForeground(Color.red);
-                int bytes = event.getEventValue();
-                System.out.println("SerialEvent RXCHAR anz=" + bytes);
-                if (this.serialPort == null) {
-                    //return;
-                }
-                if (this.serialPort.isOpened() == false) {
-                    //return;
-                }
+            //if (this.receive) {
+            // The color shows incomming data
+            this.jLabelCts.setForeground(Color.red);
+            int bytes = event.getEventValue();
+            System.out.println("SerialEvent RXCHAR anz=" + bytes);
 
-                try {
-                    byte buffer[] = serialPort.readBytes(bytes);
-                    String readed = "";
+            try {
+                byte buffer[] = serialPort.readBytes(bytes);
+                String readed = "";
 
-                    for (int i = 0; i < buffer.length; i++) {
-                        if (buffer[i] == 0) {
-                            continue;
-                        }
-                        //if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX || SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
-                        if (buffer[i] == 13) { // "\r"
-                            continue;
-                        }
-
-                        //}
-                        readed += (char) buffer[i];
+                for (int i = 0; i < buffer.length; i++) {
+                    // remove characters with code 0, which comes from cnc machine
+                    if (buffer[i] == 0) {
+                        continue;
                     }
-
-                    this.document.insertString(this.document.getLength(), readed, null);
-                    this.received_count += readed.length();
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
-            } else {
-                int bytes = event.getEventValue();
-                // emty the buffer because the last character stay in the buffer. At the next receive this character is received. Don't know why.
-                try {
-                    if (bytes > 0) {
-                        byte buffer[] = serialPort.readBytes(bytes);
+                    //if (SerialNativeInterface.getOsType() == SerialNativeInterface.OS_LINUX || SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
+                    if (buffer[i] == 13) { // "\r"
+                        continue;
                     }
-
-                } catch (SerialPortException ex) {
-                    System.out.println(ex.getMessage());
+ 
+                    //}
+                    readed += (char) buffer[i];
                 }
-                System.out.println("SerialEvent RXCHAR when sending:" + Integer.toString(bytes));
 
+                this.document.insertString(this.document.getLength(), readed, null);
+                this.received_count += readed.length();
+            } catch (Exception ex) {
+                System.out.println(ex);
             }
+
         } else if (event.isCTS()) {//If CTS (clear to send) line has changed state
             if (event.getEventValue() == 1) {//If line is ON
                 this.cts_on = true;
