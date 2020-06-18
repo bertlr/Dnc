@@ -253,18 +253,17 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 ////
 //            }
         } else if (event.isRXCHAR()) {//If data is available
-
             //if (this.receive) {
             // The color shows incomming data
             this.jLabelCts.setForeground(Color.red);
             int bytes = event.getEventValue();
             System.out.println("SerialEvent RXCHAR anz=" + bytes);
-            
             try {
                 byte buffer[] = serialPort.readBytes(bytes);
                 String readed = "";
 
                 for (int i = 0; i < buffer.length; i++) {
+                    // remove characters with code 0, which comes from cnc machine
                     if (buffer[i] == 0) {
                         continue;
                     }
@@ -272,12 +271,13 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                     if (buffer[i] == 13) { // "\r"
                         continue;
                     }
+ 
+                    //}
                     readed += (char) buffer[i];
                 }
-                if (this.receive) {
-                    this.document.insertString(this.document.getLength(), readed, null);
-                    this.received_count += readed.length();
-                }
+
+                this.document.insertString(this.document.getLength(), readed, null);
+                this.received_count += readed.length();
             } catch (Exception ex) {
                 System.out.println(ex);
             }
@@ -351,6 +351,12 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      */
     public void clearAndHide() {
         t.stop();
+        // read bytes in the pipe to clear the pipe (bringt aber nichts):
+//        try {
+//            this.serialPort.readBytes();
+//        } catch (SerialPortException spe) {
+//            System.out.println(spe.getMessage());
+//        }
         setVisible(false);
     }
 
