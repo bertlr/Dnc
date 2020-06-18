@@ -353,11 +353,11 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     public void clearAndHide() {
         t.stop();
         // read bytes in the pipe to clear the pipe (bringt aber nichts):
-        try {
-            this.serialPort.readBytes();
-        } catch (SerialPortException spe) {
-            System.out.println(spe.getMessage());
-        }
+//        try {
+//            this.serialPort.readBytes();
+//        } catch (SerialPortException spe) {
+//            System.out.println(spe.getMessage());
+//        }
         setVisible(false);
     }
 
