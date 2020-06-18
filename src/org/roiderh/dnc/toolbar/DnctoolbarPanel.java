@@ -22,6 +22,7 @@ import java.util.prefs.Preferences;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.JOptionPane;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import org.roiderh.dnc.DNCPanel;
 import org.roiderh.dnc.Properties;
@@ -141,7 +142,18 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             JOptionPane.showMessageDialog(null, "Error: no open Document");
             return;
         }
-
+        int ret = JOptionPane.showConfirmDialog(null,
+                org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "clear_editor"),
+                org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "clear_editor_title"),
+                JOptionPane.OK_CANCEL_OPTION);
+        if (ret == JOptionPane.CANCEL_OPTION) {
+            return;
+        }
+        try {
+            doc.remove(0, doc.getLength());
+        } catch (BadLocationException ex) {
+            System.out.println(ex.getMessage());
+        }
         SerialPort serialPort = new SerialPort(p.port);
 
         if (jDialogReceive == null) {
@@ -149,7 +161,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             jDialogReceive.setLocationRelativeTo(org.openide.windows.WindowManager.getDefault().getMainWindow());
         }
         int mask = SerialPort.MASK_RXCHAR;//Prepare mask  
-        if(p.flowcontrol == Properties.FLOWCONTROL_RTSCTS || p.flowcontrol == Properties.FLOWCONTROL_RTXCTSXONXOFF){
+        if (p.flowcontrol == Properties.FLOWCONTROL_RTSCTS || p.flowcontrol == Properties.FLOWCONTROL_RTXCTSXONXOFF) {
             mask = mask | SerialPort.MASK_CTS;
         }
         try {
@@ -162,9 +174,9 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             serialPort.setFlowControlMode(p.flowcontrol);
             //int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_TXEMPTY;//Prepare mask           
             serialPort.setEventsMask(mask);//Set mask
-            if(serialPort.isCTS()){
+            if (serialPort.isCTS()) {
                 System.out.println(" CTS = true, on");
-            }else{
+            } else {
                 System.out.println(" CTS = false, off");
             }
             jDialogReceive.setPort(serialPort, ed, doc, receive);
@@ -173,7 +185,6 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             //serialPort.removeEventListener();
             //serialPort.readBytes();
             serialPort.closePort();
-            
 
         } catch (SerialPortException ex) {
             JOptionPane.showMessageDialog(null, "Error: " + ex.getLocalizedMessage());

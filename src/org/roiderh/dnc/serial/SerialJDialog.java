@@ -22,7 +22,9 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import java.awt.event.*;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import jssc.SerialPortException;
 
@@ -278,7 +280,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 
                 this.document.insertString(this.document.getLength(), readed, null);
                 this.received_count += readed.length();
-            } catch (Exception ex) {
+            } catch (BadLocationException | SerialPortException ex) {
                 System.out.println(ex);
             }
 
