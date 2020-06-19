@@ -31,61 +31,70 @@ import org.openide.util.Lookup;
 @org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_DNC=DNC (RS232)", "AdvancedOption_Keywords_DNC=gcode, cnc, g-code, nc, serial port, RS232, CNC, COM, TTY"})
 public final class DNCOptionsPanelController extends OptionsPanelController {
 
-        private DNCPanel panel;
-        private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-        private boolean changed;
+    private DNCPanel panel;
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private boolean changed;
 
-        public void update() {
-                getPanel().load();
-                changed = false;
-        }
+    @Override
+    public void update() {
+        getPanel().load();
+        changed = false;
+    }
 
-        public void applyChanges() {
-                getPanel().store();
-                changed = false;
-        }
+    @Override
+    public void applyChanges() {
+        getPanel().store();
+        changed = false;
+    }
 
-        public void cancel() {
-                // need not do anything special, if no changes have been persisted yet
-        }
+    @Override
+    public void cancel() {
+        // need not do anything special, if no changes have been persisted yet
+    }
 
-        public boolean isValid() {
-                return getPanel().valid();
-        }
+    @Override
+    public boolean isValid() {
+        return getPanel().valid();
+    }
 
-        public boolean isChanged() {
-                return changed;
-        }
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
 
-        public HelpCtx getHelpCtx() {
-                return null; // new HelpCtx("...ID") if you have a help set
-        }
+    @Override
+    public HelpCtx getHelpCtx() {
+        return null; // new HelpCtx("...ID") if you have a help set
+    }
 
-        public JComponent getComponent(Lookup masterLookup) {
-                return getPanel();
-        }
+    @Override
+    public JComponent getComponent(Lookup masterLookup) {
+        return getPanel();
+    }
 
-        public void addPropertyChangeListener(PropertyChangeListener l) {
-                pcs.addPropertyChangeListener(l);
-        }
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(l);
+    }
 
-        public void removePropertyChangeListener(PropertyChangeListener l) {
-                pcs.removePropertyChangeListener(l);
-        }
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        pcs.removePropertyChangeListener(l);
+    }
 
-        private DNCPanel getPanel() {
-                if (panel == null) {
-                        panel = new DNCPanel(this);
-                }
-                return panel;
+    private DNCPanel getPanel() {
+        if (panel == null) {
+            panel = new DNCPanel(this);
         }
+        return panel;
+    }
 
-        void changed() {
-                if (!changed) {
-                        changed = true;
-                        pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
-                }
-                pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
+    void changed() {
+        if (!changed) {
+            changed = true;
+            pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
         }
+        pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
+    }
 
 }

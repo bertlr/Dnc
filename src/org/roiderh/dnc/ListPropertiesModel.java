@@ -18,7 +18,6 @@ package org.roiderh.dnc;
 
 import javax.swing.AbstractListModel;
 import java.util.ArrayList;
-import jssc.SerialPort;
 
 /**
  *
@@ -26,47 +25,43 @@ import jssc.SerialPort;
  */
 public class ListPropertiesModel extends AbstractListModel<String> {
 
-        private ArrayList<Properties> properties = new ArrayList<Properties>();
-     
-   
+    private ArrayList<Properties> properties = new ArrayList<>();
 
-        public int add_row(Properties p) {
-                int id = 0;
-                this.properties.add(p);
-        //fill_table_data( m_day);
-                this.fireIntervalAdded(this, this.properties.size()-1, this.properties.size()-1);
-                return this.properties.size();
-        }
+    public int add_row(Properties p) {
+        int id = 0;
+        this.properties.add(p);
+        this.fireIntervalAdded(this, this.properties.size() - 1, this.properties.size() - 1);
+        return this.properties.size();
+    }
 
-        public boolean delete_row(int index) {
-                this.properties.remove(index);
-        //fill_table_data( m_day);
-                this.fireIntervalRemoved(this, index, index);
-                return true;
+    public boolean delete_row(int index) {
+        this.properties.remove(index);
+        this.fireIntervalRemoved(this, index, index);
+        return true;
 
-        }
-        public boolean update_row(int index, Properties p){
-                this.properties.set(index, p);
-                this.fireContentsChanged(this, index, index);
-                return true;
-        }
-        public Properties get_row(int index){
-                return this.properties.get(index);
-        }
+    }
 
-        @Override
-        public int getSize() {
-                return this.properties.size();
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+    public boolean update_row(int index, Properties p) {
+        this.properties.set(index, p);
+        this.fireContentsChanged(this, index, index);
+        return true;
+    }
 
-        @Override
-        public String getElementAt(int i) {
-                if(this.properties.size() <= 0){
-                        return null;
-                }
-                Properties p = this.properties.get(i);
-                return p.name;
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Properties get_row(int index) {
+        return this.properties.get(index);
+    }
+
+    @Override
+    public int getSize() {
+        return this.properties.size();
+    }
+
+    @Override
+    public String getElementAt(int i) {
+        if (this.properties.size() <= 0) {
+            return null;
         }
+        Properties p = this.properties.get(i);
+        return p.name;
+    }
 }
