@@ -145,17 +145,19 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             JOptionPane.showMessageDialog(null, "Error: no open Document");
             return;
         }
-        int ret = JOptionPane.showConfirmDialog(null,
-                org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "clear_editor"),
-                org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "clear_editor_title"),
-                JOptionPane.OK_CANCEL_OPTION);
-        if (ret == JOptionPane.CANCEL_OPTION) {
-            return;
-        }
-        try {
-            doc.remove(0, doc.getLength());
-        } catch (BadLocationException ex) {
-            System.out.println(ex.getMessage());
+        if (receive) {
+            int ret = JOptionPane.showConfirmDialog(null,
+                    org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "clear_editor"),
+                    org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "clear_editor_title"),
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (ret == JOptionPane.CANCEL_OPTION) {
+                return;
+            }
+            try {
+                doc.remove(0, doc.getLength());
+            } catch (BadLocationException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
         SerialPort serialPort = new SerialPort(p.port);
 
