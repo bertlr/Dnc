@@ -36,7 +36,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     private SerialPort serialPort;
     private javax.swing.text.Document document;
     /**
-     * If the dialog is for receive date, this must be true, for sending false:
+     * If the dialog is for receive data, this must be true, for sending false:
      */
     public boolean receive = true;
     private Timer t = new Timer(400, this);
@@ -272,13 +272,15 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                     if (buffer[i] == 13) { // "\r"
                         continue;
                     }
- 
+
                     //}
                     readed += (char) buffer[i];
                 }
-
-                this.document.insertString(this.document.getLength(), readed, null);
-                this.received_count += readed.length();
+                //System.out.println("readed:"+readed);
+                if (this.receive) {
+                    this.document.insertString(this.document.getLength(), readed, null);
+                    this.received_count += readed.length();
+                }
             } catch (BadLocationException | SerialPortException ex) {
                 System.out.println(ex);
             }
@@ -301,7 +303,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
 //            System.out.println("break");
 //
         } else if (event.isERR()) {
-            //System.out.println("Error " + event.getEventValue());
+            System.out.println("Error " + event.getEventValue());
         } else if (event.isRING()) {
             //System.out.println("Ring " + event.getEventValue());
         } else if (event.isRLSD()) {
@@ -325,6 +327,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
             if (this.receive) {
                 this.jTextAreaReceive.setText("received: " + Integer.toString(this.received_count));
             } else {
+                this.sendString();
                 String text = "sent: " + Integer.toString(this.current_send_pos) + " Bytes";
                 if (this.current_send_pos < this.sendBuffer.length) {
                     int progress = (int) Math.round(100.0 * this.current_send_pos / this.sendBuffer.length);
@@ -340,7 +343,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                     this.jProgressBarSent.setString("100 %");
                 }
                 this.jTextAreaReceive.setText(text);
-                this.sendString();
+
             }
 
         }
@@ -395,6 +398,8 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
                         succeed = this.serialPort.writeString(sends);
                         if (succeed == false) {
                             System.out.println("Error at sendString");
+                            this.jTextAreaReceive.setText("Error at sending");
+                            return 0;
                         }
                         sends = "";
                         this.current_send_pos = i;
