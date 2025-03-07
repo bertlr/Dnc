@@ -63,8 +63,9 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      * @param s the port
      * @param doc the current document in the editor
      * @param r for receive from serial port, set this to true.
+     * @param pre_string this is sent before the document will be sent, to send delete command
      */
-    public void setPort(SerialPort s, JTextComponent ed, javax.swing.text.Document doc, boolean r) {
+    public void setPort(SerialPort s, JTextComponent ed, javax.swing.text.Document doc, boolean r, String pre_string) {
         this.serialPort = s;
         this.jTextAreaReceive.setText("");
         this.document = doc;
@@ -79,9 +80,9 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         this.jProgressBarSent.setStringPainted(true);
         this.jProgressBarSent.setVisible(false);
         if (this.receive == false) {
-            String doc_string = "";
+            String doc_string = pre_string;
             try {
-                doc_string = this.document.getText(0, this.document.getLength());
+                doc_string += this.document.getText(0, this.document.getLength());
             } catch (Exception ex) {
                 System.out.println("cannot read document: " + ex.getMessage());
             }
