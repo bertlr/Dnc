@@ -17,7 +17,7 @@
 package org.roiderh.dnc.toolbar;
 
 import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
+import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -36,7 +36,7 @@ import java.awt.Component;
 )
 @ActionReference(path = "Toolbars/File", position = 0)
 @Messages("CTL_DncAction=Dnc")
-public final class DncAction extends AbstractAction implements Presenter.Toolbar {
+public final class DncAction extends AbstractAction implements Presenter.Toolbar, ActionListener {
         /**
          * Set the DnctoolbarPanel in the toolbar
          * @return 
