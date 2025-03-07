@@ -22,4 +22,4 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     - name: Build with Ant
-      run: ant -f $i -Dcontinue.after.failing.tests=true -Ddo.not.clean.module.config.xml=true clean build
+      run: ant  -Dcontinue.after.failing.tests=true -Ddo.not.clean.module.config.xml=true clean build
