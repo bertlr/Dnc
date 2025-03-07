@@ -28,6 +28,9 @@ import org.roiderh.dnc.DNCPanel;
 import org.roiderh.dnc.Properties;
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * this panel is shown in the toolbar.
@@ -129,6 +132,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             this.SendOrReceive(false);
         }//GEN-LAST:event_jButtonSendActionPerformed
     private void SendOrReceive(boolean receive) {
+        String pre_string = "";
         Properties p = (Properties) this.jComboBoxConfigs.getSelectedItem();
         if (p == null) {
             JOptionPane.showMessageDialog(null, "Error: no RS232 Config selected.");
@@ -158,6 +162,40 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             } catch (BadLocationException ex) {
                 System.out.println(ex.getMessage());
             }
+        }else {
+            String doc_string = "";
+            try {
+                doc_string = doc.getText(0, doc.getLength());
+                
+            } catch (Exception ex) {
+                System.out.println("cannot read document: " + ex.getMessage());
+            }
+            List<String> nc_files = new ArrayList<>();
+            String lines[] = doc_string.split("\\r?\\n", -1);
+            Pattern pattern = Pattern.compile("^%[M,S]PF\\s*[0-9]+$");
+            System.out.println("Anfang");
+            for(int i = 0; i<lines.length; i++){
+                System.out.println(lines[i]);
+                Matcher matcher = pattern.matcher(lines[i]);
+                boolean matchFound = matcher.find();
+                if(matchFound) {
+                  System.out.println("Match found");
+                  nc_files.add(matcher.group().replace("%", "").replace(" ", ""));
+                  System.out.println(matcher.group().replace("%", ""));
+                } else {
+                  System.out.println("Match not found");
+                }
+
+            }
+            System.out.println("Ende");
+            if (nc_files.isEmpty() == false){
+                pre_string = "%CLF\n";
+                for(int i=0;i<nc_files.size();i++){
+                    pre_string += nc_files.get(i)+ "\n";
+                }
+                pre_string += "M30\n";
+                System.out.print(pre_string);
+            }
         }
         SerialPort serialPort = new SerialPort(p.port);
 
@@ -184,7 +222,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             } else {
                 System.out.println(" CTS = false, off");
             }
-            jDialogReceive.setPort(serialPort, ed, doc, receive);
+            jDialogReceive.setPort(serialPort, ed, doc, receive, pre_string);
             serialPort.addEventListener(jDialogReceive);
             jDialogReceive.setVisible(true);
             //serialPort.removeEventListener();
