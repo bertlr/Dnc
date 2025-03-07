@@ -30,7 +30,7 @@ import java.awt.Component;
         category = "File",
         id = "org.roiderh.dnc.toolbar.DncAction"
 )
-@ActionRegistration(
+@org.openide.awt.ActionRegistration(
         lazy = false,
         displayName = "NOT-USED"
 )
