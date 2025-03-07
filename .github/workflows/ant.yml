@@ -29,7 +29,7 @@ jobs:
     - uses: cjmach/setup-netbeans-action@v2.1
       name: Setup NetBeans distribution
       with:
-        version: '18'  
+        version: '21'  
     
     # Run the ant command, with the required NetBeans properties set.
     - name: Run the Ant build target
@@ -37,5 +37,5 @@ jobs:
         ant -noinput -buildfile build.xml
         -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
         -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
-        -Ddo.not.clean.module.config.xml=true clean build
+        -Dcontinue.after.failing.tests=true -Ddo.not.clean.module.config.xml=true clean build
       
