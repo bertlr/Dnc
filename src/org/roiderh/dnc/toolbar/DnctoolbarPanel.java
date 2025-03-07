@@ -174,18 +174,17 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             String lines[] = doc_string.split("\\r?\\n", -1);
             Pattern pattern = Pattern.compile("^%[M,S]PF\\s*[0-9]+$");
             System.out.println("Anfang");
-            for(int i = 0; i<lines.length; i++){
-                System.out.println(lines[i]);
-                Matcher matcher = pattern.matcher(lines[i]);
+            for (String line : lines) {
+                System.out.println(line);
+                Matcher matcher = pattern.matcher(line);
                 boolean matchFound = matcher.find();
                 if(matchFound) {
-                  System.out.println("Match found");
-                  nc_files.add(matcher.group().replace("%", "").replace(" ", ""));
-                  System.out.println(matcher.group().replace("%", ""));
+                    System.out.println("Match found");
+                    nc_files.add(matcher.group().replace("%", "").replace(" ", ""));
+                    System.out.println(matcher.group().replace("%", ""));
                 } else {
-                  System.out.println("Match not found");
+                    System.out.println("Match not found");
                 }
-
             }
             System.out.println("Ende");
             if (nc_files.isEmpty() == false){
