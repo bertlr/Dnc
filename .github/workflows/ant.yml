@@ -1,0 +1,41 @@
+# This workflow will build a Java project with Ant
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-ant
+
+name: Java CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+        
+    steps:
+    - uses: actions/checkout@v4
+      name: Checkout project
+    
+    - uses: actions/setup-java@v4
+      name: Set up JDK 11
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    
+    # Setup netbeans distribution directory on github workspace.
+    - uses: cjmach/setup-netbeans-action@v2.1
+      name: Setup NetBeans distribution
+      with:
+        version: '18'  
+    
+    # Run the ant command, with the required NetBeans properties set.
+    - name: Run the Ant build target
+      run: >-
+        ant -noinput -buildfile build.xml
+        -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
+        -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
+        -Ddo.not.clean.module.config.xml=true clean build
+      
