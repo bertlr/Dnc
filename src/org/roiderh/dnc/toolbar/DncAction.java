@@ -36,7 +36,7 @@ import java.awt.Component;
 )
 @ActionReference(path = "Toolbars/File", position = 0)
 @Messages("CTL_DncAction=Dnc")
-public final class DncAction extends AbstractAction implements Presenter.Toolbar, ActionListener {
+public final class DncAction extends AbstractAction implements Presenter.Toolbar {
         /**
          * Set the DnctoolbarPanel in the toolbar
          * @return 
