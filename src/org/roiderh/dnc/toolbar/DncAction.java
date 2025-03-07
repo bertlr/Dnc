@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionRegistration;
+//import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import javax.swing.AbstractAction;
 import org.openide.util.actions.Presenter;
@@ -30,10 +30,10 @@ import java.awt.Component;
         category = "File",
         id = "org.roiderh.dnc.toolbar.DncAction"
 )
-@ActionRegistration(
-        lazy = false,
-        displayName = "NOT-USED"
-)
+//@ActionRegistration(
+//        lazy = false,
+//        displayName = "NOT-USED"
+//)
 @ActionReference(path = "Toolbars/File", position = 0)
 @Messages("CTL_DncAction=Dnc")
 public final class DncAction extends AbstractAction implements Presenter.Toolbar {
