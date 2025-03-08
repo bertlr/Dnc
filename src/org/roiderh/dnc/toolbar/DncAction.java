@@ -30,13 +30,13 @@ import java.awt.Component;
         category = "File",
         id = "org.roiderh.dnc.toolbar.DncAction"
 )
-@org.openide.awt.ActionRegistration(
+@ActionRegistration(
         lazy = false,
         displayName = "NOT-USED"
 )
 @ActionReference(path = "Toolbars/File", position = 0)
 @Messages("CTL_DncAction=Dnc")
-public final class DncAction extends AbstractAction implements Presenter.Toolbar {
+public final class DncAction extends AbstractAction implements  java.awt.event.ActionListener, Presenter.Toolbar {
         /**
          * Set the DnctoolbarPanel in the toolbar
          * @return 
