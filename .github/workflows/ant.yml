@@ -44,4 +44,8 @@ jobs:
         ant -noinput -buildfile build.xml
         -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
         -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
-        -Dcontinue.after.failing.tests=true nbm  
+        -Dcontinue.after.failing.tests=true nbm 
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Package
+        path: build
