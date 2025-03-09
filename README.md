@@ -1,5 +1,7 @@
 # DNC
 
+[![Java CI](https://github.com/bertlr/Dnc/actions/workflows/ant.yml/badge.svg)](https://github.com/bertlr/Dnc/actions/workflows/ant.yml)
+
 Dnc is a netbeans module to send and receive cnc program files to or from a cnc machine over serial port (RS232).
 
 # Installation
