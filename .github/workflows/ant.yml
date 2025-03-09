@@ -47,5 +47,5 @@ jobs:
         -Dcontinue.after.failing.tests=true nbm 
     - uses: actions/upload-artifact@v4
       with:
-        name: Package
+        name: netbeans-dnc-nbm-package
         path: build
