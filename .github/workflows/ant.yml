@@ -38,4 +38,10 @@ jobs:
         -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
         -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
         -Dcontinue.after.failing.tests=true -Ddo.not.clean.module.config.xml=true clean build
-      
+      # Run the ant command, with the required NetBeans properties set.
+    - name: Run the Ant build target to create the netbeans module
+      run: >-
+        ant -noinput -buildfile build.xml
+        -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
+        -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
+        -Dcontinue.after.failing.tests=true nbm  
