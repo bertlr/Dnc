@@ -22,14 +22,14 @@ jobs:
     - uses: actions/setup-java@v4
       name: Set up JDK
       with:
-        java-version: '17'
+        java-version: '22'
         distribution: 'temurin'
     
     # Setup netbeans distribution directory on github workspace.
     - uses: cjmach/setup-netbeans-action@v2.1
       name: Setup NetBeans distribution
       with:
-        version: '19'  
+        version: '22'  
     
     # Run the ant command, with the required NetBeans properties set.
     - name: Run the Ant build target
