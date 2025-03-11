@@ -60,6 +60,6 @@ jobs:
         release_name: Release ${{ github.ref }}
         body: |
           Changes in this Release
-          - for old controllers 810T send command to delete first the uploaded files 
+          for old controllers 810T send command to delete first the uploaded files 
         draft: false
         prerelease: false
