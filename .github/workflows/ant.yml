@@ -48,7 +48,7 @@ jobs:
     
     - name: create zip
       run: | 
-        zip --junk-paths my-artifact build/*.nbm
+        zip --junk-paths org-roiderh-dnc build/*.nbm
     
     
     #- uses: actions/upload-artifact@v4
@@ -56,26 +56,19 @@ jobs:
     #    name: netbeans-dnc-nbm-package
     #    path: build/*.nbm
 
-    - name: Create Release
-      id: create_release
-      uses: comnoco/create-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release: for old controllers 810T send command to delete first the uploaded files 
-        draft: false
-        prerelease: false
+        files: org-roiderh-dnc.zip
       
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./my-artifact.zip
-        asset_name: my-artifact.zip
-        asset_content_type: application/zip  
+#    - name: Upload Release Asset
+#      id: upload-release-asset 
+#      uses: actions/upload-release-asset@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+#        asset_path: ./my-artifact.zip
+#        asset_name: my-artifact.zip
+#        asset_content_type: application/zip  
