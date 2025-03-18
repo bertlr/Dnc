@@ -194,6 +194,13 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
                 }
                 pre_string += "M30\n";
                 System.out.print(pre_string);
+                int ret = JOptionPane.showConfirmDialog(null,
+                    org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "query_delete_files"),
+                    org.openide.util.NbBundle.getMessage(DnctoolbarPanel.class, "query_delete_files_title"),
+                        JOptionPane.YES_NO_OPTION);
+                if (ret == JOptionPane.NO_OPTION) { 
+                    pre_string = "";
+                }
             }
         }
         SerialPort serialPort = new SerialPort(p.port);
