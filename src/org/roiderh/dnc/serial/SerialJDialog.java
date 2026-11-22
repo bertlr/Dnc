@@ -22,6 +22,7 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import java.awt.event.*;
+import java.io.UnsupportedEncodingException;
 import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -53,23 +54,33 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
      */
     private int current_send_pos = 0;
     private boolean is_sending = false;
-    private JTextComponent textComponent;
+    //private JTextComponent textComponent;
 
     boolean cts_on = true;
 
     /**
-     * The serial port must be opened before call this function.
+     * Initializes the dialog for a new receive or send session.
      *
-     * @param s the port
-     * @param doc the current document in the editor
-     * @param r for receive from serial port, set this to true.
-     * @param pre_string this is sent before the document will be sent, to send delete command
+     * <p>The caller must pass an already opened serial port. The dialog resets
+     * its counters and status widgets for every session. In send mode it also
+     * builds the ASCII transmit buffer from the editor document after
+     * normalizing line endings to CR/LF and prepending the supplied command
+     * string.</p>
+     *
+     * @param s the already opened serial port used by the dialog
+     * @param ed the editor component associated with {@code doc}; currently not
+     *     used directly
+     * @param doc the editor document that receives incoming text or provides the
+     *     outgoing text
+     * @param r {@code true} to receive text from the serial port,
+     *     {@code false} to send the document content
+     * @param pre_string text sent before the document content in send mode
      */
     public void setPort(SerialPort s, JTextComponent ed, javax.swing.text.Document doc, boolean r, String pre_string) {
         this.serialPort = s;
         this.jTextAreaReceive.setText("");
         this.document = doc;
-        this.textComponent = ed;
+        //this.textComponent = ed;
         this.receive = r;
         this.received_count = 0;
         this.current_send_pos = 0;
@@ -83,12 +94,17 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
             String doc_string = pre_string;
             try {
                 doc_string += this.document.getText(0, this.document.getLength());
-            } catch (Exception ex) {
+            } catch (BadLocationException ex) {
                 System.out.println("cannot read document: " + ex.getMessage());
             }
             doc_string = doc_string.replace("\r", "");
             doc_string = doc_string.replace("\n", "\r\n");
-            this.sendBuffer = doc_string.getBytes();
+            try {
+                //doc_string = new String(doc_string.getBytes(), "ISO-8859-1");
+                this.sendBuffer = doc_string.getBytes("ASCII");
+            } catch (UnsupportedEncodingException e) {
+                System.out.println("Unsupported encoding: " + e.getMessage());
+            }
             this.jProgressBarSent.setVisible(true);
         }
         t.start();
@@ -96,7 +112,10 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     }
 
     /**
-     * Creates new form NewJDialog
+     * Creates the dialog and installs its close handling.
+     *
+     * @param parent the parent frame of the modal dialog
+     * @param modal whether the dialog blocks input to other windows
      */
     public SerialJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -194,6 +213,11 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+        /**
+         * Closes the dialog when the user presses the close button.
+         *
+         * @param evt the button click event
+         */
         private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
             // TODO add your handling code here:
             this.clearAndHide();
@@ -201,7 +225,9 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         }//GEN-LAST:event_jButtonCloseActionPerformed
 
     /**
-     * @param args the command line arguments
+     * Starts the dialog as a standalone Swing window for manual testing.
+     *
+     * @param args command line arguments; ignored
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -242,6 +268,16 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         });
     }
 
+    /**
+     * Reacts to serial-port events while the dialog is open.
+     *
+     * <p>Receive events update the status indicator and append filtered incoming
+     * text to the editor document in receive mode. Control-line events update
+     * the CTS state used by sending, and error events are logged to standard
+     * output.</p>
+     *
+     * @param event the serial-port event raised by JSSC
+     */
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.isTXEMPTY()) {
@@ -315,10 +351,14 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     }
 
     /**
-     * Called by a timer every second. switch the color of the Text to green
-     * every second. This shows there is no incomming data.
+     * Handles timer ticks for the transfer status display.
      *
-     * @param e
+     * <p>When the dialog is receiving, the timer resets the CTS indicator color
+     * and updates the byte counter shown in the text area. When the dialog is
+     * sending, it advances the buffered transfer and refreshes the progress bar
+     * and status text.</p>
+     *
+     * @param e the action event fired by the dialog timer
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -352,7 +392,7 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     }
 
     /**
-     * This stop the timer and hides it.
+     * Stops the periodic status timer and hides the dialog.
      */
     public void clearAndHide() {
         t.stop();
@@ -366,10 +406,14 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
     }
 
     /**
-     * Sends a line.
+     * Sends the next chunk of the prepared transmit buffer.
      *
-     * @param begin position in the string to send
-     * @return
+     * <p>The method writes buffered text in newline-delimited chunks, sending at
+     * most about ten lines per timer tick before returning so the UI can keep
+     * updating. The current send position is advanced only after a successful
+     * write.</p>
+     *
+     * @return the number of bytes already queued to the serial port
      */
     private int sendString() {
         if (this.is_sending) {
@@ -379,6 +423,9 @@ public class SerialJDialog extends javax.swing.JDialog implements SerialPortEven
         if (cts_on == false) {
             this.jLabelCts.setForeground(Color.yellow);
             //return this.current_send_pos
+            if (this.current_send_pos >= this.sendBuffer.length) {
+                this.clearAndHide(); // hide if the user press the Stop button on the CNC machine
+            }
         }
         this.is_sending = true;
         try {

@@ -16,6 +16,7 @@
  */
 package org.roiderh.dnc.toolbar;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import org.openide.util.NbPreferences;
 import java.util.prefs.Preferences;
@@ -43,7 +44,11 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
     org.roiderh.dnc.serial.SerialJDialog jDialogReceive = null;
 
     /**
-     * Creates new form DncPanel
+     * Creates the toolbar panel and loads the saved serial configurations.
+     *
+     * <p>The panel reads the persisted DNC configurations into the combo box and
+     * registers itself as a preference listener so the toolbar stays in sync
+     * with edits made in the options dialog.</p>
      */
     public DnctoolbarPanel() {
         initComponents();
@@ -56,6 +61,15 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
 
     }
 
+    /**
+     * Reloads the available configurations after the stored preferences change.
+     *
+     * <p>The current selection is preserved when possible so toolbar actions can
+     * continue to use the same configuration after an update from the options
+     * panel.</p>
+     *
+     * @param evt the preference change notification
+     */
     @Override
     public void preferenceChange(PreferenceChangeEvent evt) {
         Properties p = (Properties) this.jComboBoxConfigs.getSelectedItem();
@@ -123,14 +137,37 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
         );
     }// </editor-fold>//GEN-END:initComponents
 
+        /**
+         * Handles manual selection changes in the configuration combo box.
+         *
+         * @param evt the combo box action event
+         */
         private void jComboBoxConfigsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxConfigsActionPerformed
             // TODO add your handling code here:
             //System.out.println("Combo configs selection");
         }//GEN-LAST:event_jComboBoxConfigsActionPerformed
-
+        
+        /**
+         * Starts sending the active editor document through the selected serial
+         * configuration.
+         *
+         * @param evt the send button action event
+         */
         private void jButtonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendActionPerformed
             this.SendOrReceive(false);
         }//GEN-LAST:event_jButtonSendActionPerformed
+    /**
+     * Opens the serial dialog in receive or send mode.
+     *
+     * <p>The method validates that both a serial configuration and an editor are
+     * available, optionally clears the editor for receive mode, scans outgoing
+     * text for NC file declarations to prepare a controller-specific delete
+     * command, opens the serial port with the selected parameters, and then
+     * delegates the live transfer to {@link org.roiderh.dnc.serial.SerialJDialog}.</p>
+     *
+     * @param receive {@code true} to receive text into the editor,
+     *     {@code false} to send the editor content
+     */
     private void SendOrReceive(boolean receive) {
         String pre_string = "";
         Properties p = (Properties) this.jComboBoxConfigs.getSelectedItem();
@@ -167,8 +204,14 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             try {
                 doc_string = doc.getText(0, doc.getLength());
                 
-            } catch (Exception ex) {
+            } catch (BadLocationException ex) {
                 System.out.println("cannot read document: " + ex.getMessage());
+                return;
+            }
+            boolean isAscii = Charset.forName("US-ASCII").newEncoder().canEncode(doc_string);
+            if (isAscii == false){
+                JOptionPane.showMessageDialog(null, "include invalid ascii characters");
+                //return;
             }
             List<String> nc_files = new ArrayList<>();
             String lines[] = doc_string.split("\\r?\\n", -1);
@@ -188,6 +231,7 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
             }
             System.out.println("Ende");
             if (nc_files.isEmpty() == false){
+                // for controller 810T should send the pre command for delete files %CLF with all files to sent.
                 pre_string = "%CLF\n";
                 for(int i=0;i<nc_files.size();i++){
                     pre_string += nc_files.get(i)+ "\n";
@@ -242,6 +286,12 @@ public class DnctoolbarPanel extends javax.swing.JPanel implements PreferenceCha
 
     }
 
+        /**
+         * Starts receiving text from the selected serial configuration into the
+         * active editor.
+         *
+         * @param evt the receive button action event
+         */
         private void jButtonReceiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceiveActionPerformed
 
             this.SendOrReceive(true);
